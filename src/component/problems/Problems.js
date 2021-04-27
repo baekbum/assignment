@@ -13,7 +13,7 @@ const Problems = ({state}) => {
         if (obj) {
             setProblemList(obj);
             setInit(true);
-        }        
+        }
     },[state.problemsObj]);
 
     return (

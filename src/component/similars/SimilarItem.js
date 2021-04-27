@@ -23,7 +23,7 @@ const SimilarItem = ({state, dispatch, index, obj}) => {
         // eslint-disable-next-line
     },[state, dispatch, problemList, similarList]);
 
-    const changeProblem = useCallback((index) => {
+    const changeProblem = useCallback((index, obj) => {
         let pList = Object.assign([], problemList);
         let sList = Object.assign([], similarList);
         let tempObj = pList[state.targetIndex];
@@ -33,6 +33,7 @@ const SimilarItem = ({state, dispatch, index, obj}) => {
 
         dispatch.updateProblems(pList);
         dispatch.updateSimilars(sList);
+        dispatch.showSimilars(state.targetIndex, obj);
         // eslint-disable-next-line
     },[state, dispatch, problemList, similarList]);
 
@@ -48,7 +49,7 @@ const SimilarItem = ({state, dispatch, index, obj}) => {
                     </div>
                     <div>
                         <Button variant="outline-primary" className='similars-button' onClick={addProblem.bind(this, index, obj)}>추가</Button>
-                        <Button variant="outline-primary" className='delete-button' onClick={changeProblem.bind(this, index)}>교체</Button>    
+                        <Button variant="outline-primary" className='delete-button' onClick={changeProblem.bind(this, index, obj)}>교체</Button>    
                     </div>                    
                 </div>
             </div>
@@ -79,7 +80,8 @@ function mapDispatchToProps(dispatch) {
     return {
         dispatch : {
             updateProblems: (obj) => dispatch({type : actions.updateProblems(), data : obj}),
-            updateSimilars: (obj) => dispatch({type : actions.updateSimilars(), data : obj})
+            updateSimilars: (obj) => dispatch({type : actions.updateSimilars(), data : obj}),
+            showSimilars: (index, obj) => dispatch({type : actions.showSimilars(), index : index, obj : obj }),
         }        
     };
 }

@@ -5,10 +5,11 @@ import '../../css/problems/ProblemItem.css';
 import * as actions from '../../action/Action';
 
 const ProblemItem = ({state, dispatch, index, obj}) => {
-    const showSimilars = useCallback((idx, obj) => {
+    const showSimilars = (idx, obj, ref) => {
+        //ref.current.setAttribute('class', 'similars-button btn active btn-outline-primary');
         dispatch.showSimilars(idx, obj);
         // eslint-disable-next-line
-    },[]);
+    };
 
     const deleteProblem = useCallback(async (id) => {
         const newState = await newProblems(state.problemsObj, id);
@@ -39,7 +40,7 @@ const ProblemItem = ({state, dispatch, index, obj}) => {
                         <span className='unit-name'>{obj.unitName}</span>
                     </div>
                     <div>
-                        <Button variant="outline-primary" className='similars-button' onClick={showSimilars.bind(this, index, obj)} >유사문항</Button>
+                        <Button variant="outline-primary" className='similars-button' onClick={showSimilars.bind(this, index, obj)} active={state.targetIndex === index} >유사문항</Button>
                         <Button variant="outline-primary" className='delete-button' onClick={deleteProblem.bind(this, obj.id)} >삭제</Button>    
                     </div>                    
                 </div>
@@ -59,7 +60,8 @@ const ProblemItem = ({state, dispatch, index, obj}) => {
 function mapStateToProps(state) {
     return { 
         state : {
-            problemsObj : state.problemsReducer.problemsObj
+            problemsObj : state.problemsReducer.problemsObj,
+            targetIndex : state.isAtiveReducer.index
         }
     };
 }

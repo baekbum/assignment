@@ -62,3 +62,8 @@
     line-height: 1.750em;
 }
 
+@media screen and (max-width: 800px) {
+    .similars-container .similars-content {        
+        overflow-x: auto;
+    }
+}
