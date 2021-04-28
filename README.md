@@ -1,70 +1,23 @@
-# Getting Started with Create React App
+# 파일 구조
+- action : reducer에서 사용할 type 및 타입 값 가져오기 위해 정의해놓은 곳 입니다.
+- component : 문제 리스트와 유사문제 리스트의 컴포넌트들이 있는 곳 입니다.
+- css : 컴포넌트에서 사용되는 css가 있는 곳 입니다.
+- store : 문제 리스트, 유사문제 리스트, 현재 active 된 객체에 대한 정보를 담는 reducer 입니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 동작 실행 설명
+1. json 파일 로드 (App.js)
+- App.js에서 json파일을 http 통신을 통하여 로드합니다.
+- 문제 리스트와 유사문제 리스트 데이터를 각 Reducer에 저장합니다.
 
-## Available Scripts
+2. 문제 리스트 (Problem.js, ProblemItem.js)
+- 문제리스트 state가 변경될 때 useEffect를 통하여 문제리스트 state가 존재하면 데이터를 로컬 변수에 저장합니다.
+- 해당 변수를 map 함수를 이용하여 ProblemItem.js에 index와 Obj를 인자로 넘겨 컴포넌트를 반복적으로 렌더링 합니다.
+- 유사문항 버튼 클릭 시 IsActive Reducer에 유사문제 리스트 보여주기 위해 similarsShow를 true, 선택한 object index, 선택한 object를 저장합니다.
+- 문제리스트를 렌더링 할 때 해당 객체의 인덱스와 state에 저장된 선택한 object index 값을 비교하여 해당 유사문항 버튼만 활성화 합니다.
+- 삭제 버튼 클릭 시 현재 문제리스트를 로컬 변수에 저장한 후 로컬 변수에서 해당 배열을 삭제하고 해당 배열을 Problems Reducer에 전달하여 새로운 state로 저장합니다.
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+3. 유사문제 리스트(Similars.js, SimilarItem.js)
+- 문제리스트 state가 변경될 때 useEffect를 통하여 문제리스트 state가 존재하면 데이터를 로컬 변수에 저장합니다.
+- 해당 변수를 map 함수를 이용하여 SimilarItem.js에 index와 Obj를 인자로 넘겨 컴포넌트를 반복적으로 렌더링 합니다.
+- 추가 버튼 클릭 시 유사문제 리스트의 object를 활성화 된 문제 리스트 object 밑에 추가합니다. (이 때 선택한 문제 리스트의 인덱스 값은 IsActive Reducer의 index에 저장되어있습니다.) 이 후 유사문제 리스트에서 선택한 object를 삭제하고 문제리스트와 유사문제 리스트의 state를 변경합니다.
+- 교체 버튼 클릭 시 유사문제 리스트의 object와 현재 활성화 된 문제 리스트의 object의 값을 바꾸고 state를 변경합니다.

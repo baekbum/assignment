@@ -1,13 +1,13 @@
 import { combineReducers, createStore } from 'redux';
 import problemsReducer from './Problems';
 import similarsReducer from './Similars';
-import isAtiveReducer from './IsAtive';
+import isActiveReducer from './IsActive';
 
 
 const reducers = combineReducers({
     problemsReducer,
     similarsReducer,
-    isAtiveReducer
+    isActiveReducer
 });
 
 const store = createStore(reducers);

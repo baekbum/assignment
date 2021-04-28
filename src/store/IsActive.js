@@ -1,6 +1,6 @@
 import * as types from '../action/ActionType';
 
-const isAtiveReducer = (state = { similarsShow : false, index : null, obj : {} }, action) => {
+const isActiveReducer = (state = { similarsShow : false, index : null, obj : {} }, action) => {
     switch(action.type) {
         case types.SHOW_SIMILARS:
             return { similarsShow : true,  index : action.index, obj : action.obj }
@@ -11,4 +11,4 @@ const isAtiveReducer = (state = { similarsShow : false, index : null, obj : {} }
     }
 }
 
-export default isAtiveReducer;
+export default isActiveReducer;

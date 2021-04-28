@@ -70,8 +70,8 @@ function mapStateToProps(state) {
         state : {
             problemsObj : state.problemsReducer.problemsObj,
             similarsObj : state.similarsReducer.similarsObj,
-            targetIndex : state.isAtiveReducer.index,
-            targetObj : state.isAtiveReducer.obj
+            targetIndex : state.isActiveReducer.index,
+            targetObj : state.isActiveReducer.obj
         }
     };
 }

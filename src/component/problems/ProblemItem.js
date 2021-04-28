@@ -5,18 +5,16 @@ import '../../css/problems/ProblemItem.css';
 import * as actions from '../../action/Action';
 
 const ProblemItem = ({state, dispatch, index, obj}) => {
-    const showSimilars = (idx, obj, ref) => {
-        //ref.current.setAttribute('class', 'similars-button btn active btn-outline-primary');
+    const showSimilars = useCallback((idx, obj) => {
         dispatch.showSimilars(idx, obj);
-        // eslint-disable-next-line
-    };
+    },[dispatch])
 
     const deleteProblem = useCallback(async (id) => {
         const newState = await newProblems(state.problemsObj, id);
         dispatch.deleteProblem(newState);
         dispatch.hideSimilars();
         // eslint-disable-next-line
-    },[state.problemsObj]);
+    },[state.problemsObj, dispatch]);
 
     const newProblems = useCallback((problemList, key) => {
         return new Promise(function(resolve, reject) {
@@ -61,7 +59,7 @@ function mapStateToProps(state) {
     return { 
         state : {
             problemsObj : state.problemsReducer.problemsObj,
-            targetIndex : state.isAtiveReducer.index
+            targetIndex : state.isActiveReducer.index
         }
     };
 }

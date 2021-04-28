@@ -23,7 +23,7 @@ const Similars = ({state}) => {
                 <span className='title'>문항 교체/추가</span>
             </div>
             <div className='similars-content'>
-                { state.isAtive ? (
+                { state.isActive ? (
                     <>
                         <div className='problem-unit-name'>
                             <span>{state.targetObj.unitName}</span>
@@ -50,8 +50,8 @@ function mapStateToProps(state) {
     return { 
         state : {
             similarsObj : state.similarsReducer.similarsObj,
-            isAtive : state.isAtiveReducer.similarsShow,
-            targetObj : state.isAtiveReducer.obj
+            isActive : state.isActiveReducer.similarsShow,
+            targetObj : state.isActiveReducer.obj
         }
     };
 }
