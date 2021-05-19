@@ -1,17 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import '../../css/similars/Similars.css';
+import '../../css/similars/Similars.scss';
 import SimilarItem from './SimilarItem';
 
-const Similars = ({state}) => {
-    const [similarList, setSimilarList] = useState([]);
-    const [init, setInit] = useState(false);
+interface IJsonData {
+    id: number;
+    unitCode: number;
+    answerData: string;
+    problemLevel: number;
+    problemType: string;
+    problemURL: string;
+    unitName: string;
+    needCheckLayout: number;
+    source: number;
+    hide: number;
+    curriculumNumber: number;
+    cebuCode: number;
+    totalTimes: number;
+    correctTimes: number;
+    hwpExist: number;
+    scorable: number;
+    tagTop: null;
+    bookDataId: number;
+};
+
+const Similars = memo( ({state} : any) => {
+    const [similarList, setSimilarList] = useState<Array<IJsonData>>([]);
+    const [init, setInit] = useState<boolean>(false);
     
     useEffect(() => {
         const obj = state.similarsObj;
 
-        if (obj) {
+        if (obj !== undefined) {
             setInit(true);
             setSimilarList(obj);            
         }        
@@ -19,21 +40,21 @@ const Similars = ({state}) => {
 
     return (
         <div className='similars-container'>
-            <div className='similars-header'>
+            <div className='header'>
                 <span className='title'>문항 교체/추가</span>
             </div>
-            <div className='similars-content'>
+            <div className='content'>
                 { state.isActive ? (
                     <>
                         <div className='problem-unit-name'>
                             <span>{state.targetObj.unitName}</span>
                         </div>
-                        { init ? similarList.map((s, i) => <SimilarItem key={s.id} index={i} obj={s}/>) : null }
+                        { init && similarList.length > 0 ? similarList.map((s, i) => <SimilarItem key={s.id} index={i} obj={s}/>) : null }
                     </>
                 ) : (
                     <div className='disabled'>
                         <div style={{display: 'flex', alignItems: 'center'}}>
-                            <Button variant="outline-primary" className='similars-button' disabled >유사문항</Button>
+                            <Button variant="outline-primary" className='similars-btn' disabled >유사문항</Button>
                             <span className='disabled-span'>버튼을 누르면</span>
                         </div>
                         <div>
@@ -44,9 +65,17 @@ const Similars = ({state}) => {
             </div>
         </div>
     );
-};
+}, areEqual);
 
-function mapStateToProps(state) {
+function areEqual(prevProps: any, nextProps: any) {
+    return (
+        prevProps.state.similarsObj === nextProps.state.similarsObj
+        && prevProps.state.isActive === nextProps.state.isActive
+        && prevProps.state.targetObj === nextProps.state.targetObj
+    );
+}
+
+function mapStateToProps(state: any) {
     return { 
         state : {
             similarsObj : state.similarsReducer.similarsObj,

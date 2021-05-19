@@ -3,7 +3,6 @@ import problemsReducer from './Problems';
 import similarsReducer from './Similars';
 import isActiveReducer from './IsActive';
 
-
 const reducers = combineReducers({
     problemsReducer,
     similarsReducer,

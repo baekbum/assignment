@@ -1,0 +1,57 @@
+.problem-item-container {
+    border-bottom: 1vh solid #F5F5F5;
+
+    > .header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 0.3vh solid #F5F5F5;
+
+        .problem-type {
+            color: #9F9F9F;
+            font-size: 0.875em;
+        }
+
+        .unit-name {
+            color: #4C4C4C;
+            font-size: 0.875em;
+        }
+
+        .similars-btn {
+            width: 5vw;
+            color: #00ABFF;
+            border: 0.063em solid #E0E0E0;
+            box-sizing: border-box;
+            border-radius: 0.125em;
+            font-size: 0.875em;
+        }
+
+        .similars-btn:hover {
+            color: white;
+        }
+
+        .delete-btn {
+            margin-left: 0.5vw;
+            width: 5vw;
+            color: #00ABFF;
+            border: 0.063em solid #E0E0E0;
+            box-sizing: border-box;
+            border-radius: 0.125em;
+            font-size: 0.875em;
+        }
+
+        .delete-btn:hover {
+            color: white;
+        }
+    }
+
+    > .content {
+        display: flex;
+
+        .index{
+            font-weight: bold;
+            font-size: 1.500em;
+            line-height: 2.188em;
+            color: #02C7F2;
+        }
+    }
+}

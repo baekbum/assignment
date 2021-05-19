@@ -1,3 +1,5 @@
+# react + typescript + scss 연습용 프로젝트
+
 # 파일 구조
 - action : reducer에서 사용할 type 및 타입 값 가져오기 위해 정의해놓은 곳 입니다.
 - component : 문제 리스트와 유사문제 리스트의 컴포넌트들이 있는 곳 입니다.

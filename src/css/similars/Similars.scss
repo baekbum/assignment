@@ -1,0 +1,71 @@
+.similars-container {
+    height: inherit;
+    width: inherit;
+    border-left: 0.2vw solid #E0E0E0;
+
+    > .header {
+        height: 7%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-top: 0.2em solid #F5F5F5;
+        border-bottom: 0.2em solid #F5F5F5;
+
+        .title {
+            font-size: 0.875em;
+            font-weight: bold;
+            line-height: 1.250em;
+        }
+    }
+
+    > .content {
+        height: 93%;
+        overflow: scroll;
+        overflow-x: hidden;
+
+        .problem-unit-name {
+            background-color: #FAFAFA;
+            padding: 1em;
+
+            span {
+                font-size: 0.875em;
+                line-height: 1.250em;
+                color: #4C4C4C;
+            }
+        }
+
+        .disabled {
+            height: inherit;
+            width: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .similars-btn {
+                width: 5vw;
+                color: #00ABFF;
+                border: 0.063em solid #E0E0E0;
+                box-sizing: border-box;
+                border-radius: 0.125em;
+                font-size: 0.875em;
+                margin-right: 0.5vw;
+                margin-bottom: 0.5vh;
+            }
+
+            .disabled-span {
+                font-size: 0.875em;
+                color: #9F9F9F;
+                line-height: 1.750em;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .similars-container {
+        .similars-content {
+            overflow-x: auto;
+        }
+    }
+}
