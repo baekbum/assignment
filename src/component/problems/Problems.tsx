@@ -25,11 +25,11 @@ interface IJsonData {
 };
 
 const Problems = memo( ({state} : any) => {
-    const [problemList, setProblemList] = useState<Array<IJsonData>>([]);
-    const [init, setInit] = useState<Boolean>(false);
+    const [problemList, setProblemList] = useState<IJsonData[]>([]);
+    const [init, setInit] = useState<boolean>(false);
     
     useEffect(() => {
-        const obj = state.problemsObj;
+        const obj: IJsonData[] | undefined = state.problemsObj;
 
         if (obj !== undefined) {
             setProblemList(obj);

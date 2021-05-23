@@ -26,11 +26,11 @@ interface IJsonData {
 };
 
 const Similars = memo( ({state} : any) => {
-    const [similarList, setSimilarList] = useState<Array<IJsonData>>([]);
+    const [similarList, setSimilarList] = useState<IJsonData[]>([]);
     const [init, setInit] = useState<boolean>(false);
     
     useEffect(() => {
-        const obj = state.similarsObj;
+        const obj: IJsonData[] | undefined = state.similarsObj;
 
         if (obj !== undefined) {
             setInit(true);

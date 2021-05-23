@@ -26,24 +26,36 @@ interface IJsonData {
 };
 
 interface newObject {
-    pList: Array<IJsonData>;
-    sList: Array<IJsonData>;
-}
+    pList: IJsonData[];
+    sList: IJsonData[];
+};
+
+interface IAssignObj {
+    (): newObject;
+};
+
+interface IAddProblem {
+    (idx: number, obj: IJsonData): void;
+};
+
+interface IChangeProblem {
+    (idx: number, obj: IJsonData): void;
+};
 
 const SimilarItem = memo( ({state, dispatch, index, obj}: any) => {
-    const [problemList, setProblemList] = useState<Array<IJsonData>>([]);
-    const [similarList, setSimilarList] = useState<Array<IJsonData>>([]);
+    const [problemList, setProblemList] = useState<IJsonData[]>([]);
+    const [similarList, setSimilarList] = useState<IJsonData[]>([]);
 
     useEffect(() => {
         setProblemList(state.problemsObj);
         setSimilarList(state.similarsObj);
     },[state.problemsObj, state.similarsObj]);
 
-    const assignObj = useCallback<() => newObject>(() => {
-        let pList: Array<IJsonData> = Object.assign([], problemList);
-        let sList: Array<IJsonData> = Object.assign([], similarList);
+    const assignObj = useCallback<IAssignObj>(() => {
+        let pList: IJsonData[] = Object.assign([], problemList);
+        let sList: IJsonData[] = Object.assign([], similarList);
 
-        const obj = {
+        const obj: newObject = {
             'pList': pList,
             'sList': sList
         }
@@ -51,7 +63,7 @@ const SimilarItem = memo( ({state, dispatch, index, obj}: any) => {
         return obj;        
     },[problemList, similarList]);
 
-    const addProblem = useCallback<(idx: number, obj: IJsonData) => void>((index, obj) => {
+    const addProblem = useCallback<IAddProblem>((index, obj) => {
         const newObj: newObject = assignObj();
 
         newObj.pList.splice(state.targetIndex + 1, 0, obj);
@@ -61,7 +73,7 @@ const SimilarItem = memo( ({state, dispatch, index, obj}: any) => {
         // eslint-disable-next-line
     },[state, dispatch, problemList, similarList]);
 
-    const changeProblem = useCallback<(idx: number, obj: IJsonData) => void>((index, obj) => {
+    const changeProblem = useCallback<IChangeProblem>((index, obj) => {
         const newObj: newObject = assignObj();
         
         const tempObj: IJsonData = newObj.pList[state.targetIndex];

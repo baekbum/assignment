@@ -31,7 +31,7 @@ const App = memo( ({dispatch}: any) => {
   useEffect(() => {
     axios.get('http://localhost:3000/fe-problems.json')
     .then((result) => {
-      const problems: Array<IJsonData> = result.data.data;
+      const problems: IJsonData[] = result.data.data;
       dispatch.saveProblems(problems);
     }).catch((err) => {
       console.log(err);
@@ -39,7 +39,7 @@ const App = memo( ({dispatch}: any) => {
 
     axios.get('http://localhost:3000/fe-similars.json')
     .then((result) => {
-      const similars: Array<IJsonData> = result.data.data;
+      const similars: IJsonData[] = result.data.data;
       dispatch.saveSimilars(similars);
     }).catch((err) => {
       console.log(err);
@@ -63,8 +63,8 @@ const App = memo( ({dispatch}: any) => {
 function mapDispatchToProps(dispatch: any) {
   return {
     dispatch : {
-      saveProblems: (obj: Array<IJsonData>) => dispatch({type : actions.saveProblems(), data : obj}),
-      saveSimilars: (obj: Array<IJsonData>) => dispatch({type : actions.saveSimilars(), data : obj})  
+      saveProblems: (obj: IJsonData[]) => dispatch({type : actions.saveProblems(), data : obj}),
+      saveSimilars: (obj: IJsonData[]) => dispatch({type : actions.saveSimilars(), data : obj})  
     }    
   };
 }

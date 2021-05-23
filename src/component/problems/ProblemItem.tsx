@@ -25,24 +25,37 @@ interface IJsonData {
     bookDataId: number;
 };
 
-const ProblemItem = memo( ({state, dispatch, index, obj}: any) => {    
-    const showSimilars = useCallback<(idx: number, obj: IJsonData) => void>((idx, obj) => {
+interface IShowSimilars {
+    (idx: number, obj: IJsonData): void
+};
+
+interface IDeleteProblem {
+    (id: number): void
+};
+
+interface INewProblems {
+    (problemList: IJsonData[], key: number): Promise<IJsonData[]>
+};
+
+const ProblemItem = memo( ({state, dispatch, index, obj}: any) => {
+
+    const showSimilars = useCallback<IShowSimilars>((idx, obj) => {
         dispatch.showSimilars(idx, obj);
     },[dispatch])
 
-    const deleteProblem = useCallback<(id: number) => void>(async (id) => {
-        const newState: Array<IJsonData> = await newProblems(state.problemsObj, id);
+    const deleteProblem = useCallback<IDeleteProblem>(async (id) => {
+        const newState: IJsonData[] = await newProblems(state.problemsObj, id);
         dispatch.deleteProblem(newState);
         dispatch.hideSimilars();
         // eslint-disable-next-line
     },[state.problemsObj, dispatch]);
 
-    const newProblems = useCallback<(problemList: Array<IJsonData>, key: number) => Promise<Array<IJsonData>>>((problemList, key) => {
-        return new Promise<Array<IJsonData>>((resolve, reject) => {
-            const problems: Array<IJsonData> = Object.assign([], problemList);
+    const newProblems = useCallback<INewProblems>((problemList, key) => {
+        return new Promise<IJsonData[]>((resolve, reject) => {
+            const problems: IJsonData[] = Object.assign([], problemList);
             const id: number = key;
 
-            const newProblems: Array<IJsonData> = problems.filter(problem => problem.id !== id);
+            const newProblems: IJsonData[] = problems.filter(problem => problem.id !== id);
     
             resolve(newProblems);
         });
