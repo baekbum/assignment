@@ -4,6 +4,13 @@ import { connect } from 'react-redux';
 import '../../css/problems/ProblemItem.scss';
 import * as actions from '../../action/Action';
 
+interface IProps {
+    state?: any;
+    dispatch?: any;
+    index: number;
+    obj: IJsonData;
+};
+
 interface IJsonData {
     id: number;
     unitCode: number;
@@ -37,7 +44,7 @@ interface INewProblems {
     (problemList: IJsonData[], key: number): Promise<IJsonData[]>
 };
 
-const ProblemItem = memo( ({state, dispatch, index, obj}: any) => {
+const ProblemItem = memo(({state, dispatch, index, obj}: IProps) => {
 
     const showSimilars = useCallback<IShowSimilars>((idx, obj) => {
         dispatch.showSimilars(idx, obj);

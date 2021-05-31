@@ -1,10 +1,14 @@
 import axios from 'axios';
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import * as actions from './action/Action';
 import Problems from './component/problems/Problems';
 import Similars from './component/similars/Similars';
 import './css/App.scss';
+
+interface IProps {
+  dispatch?: any;
+};
 
 interface IJsonData {
   id: number;
@@ -27,7 +31,7 @@ interface IJsonData {
   bookDataId: number;
 };
 
-const App = memo( ({dispatch}: any) => {
+const App = memo(({dispatch} : IProps) => {
   useEffect(() => {
     axios.get('http://localhost:3000/fe-problems.json')
     .then((result) => {

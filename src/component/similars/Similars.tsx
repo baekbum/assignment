@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import '../../css/similars/Similars.scss';
 import SimilarItem from './SimilarItem';
 
+interface IProps {
+    state?: any;
+};
+
 interface IJsonData {
     id: number;
     unitCode: number;
@@ -25,7 +29,7 @@ interface IJsonData {
     bookDataId: number;
 };
 
-const Similars = memo( ({state} : any) => {
+const Similars = memo(({state} : IProps) => {
     const [similarList, setSimilarList] = useState<IJsonData[]>([]);
     const [init, setInit] = useState<boolean>(false);
     

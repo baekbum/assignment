@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import '../../css/problems/Problems.scss';
 import ProblemItem from './ProblemItem';
 
+interface IProps {
+    state?: any;
+};
+
 interface IJsonData {
     id: number;
     unitCode: number;
@@ -24,7 +28,7 @@ interface IJsonData {
     bookDataId: number;
 };
 
-const Problems = memo( ({state} : any) => {
+const Problems = memo(({state} : IProps) => {
     const [problemList, setProblemList] = useState<IJsonData[]>([]);
     const [init, setInit] = useState<boolean>(false);
     
