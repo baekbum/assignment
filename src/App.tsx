@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actions from './action/Action';
 import Problems from './component/problems/Problems';

@@ -1,4 +1,5 @@
 # react + typescript + scss 연습용 프로젝트
+- 0606 react.lazy 및 IntersectionObserver 부분 적용
 
 # 파일 구조
 - action : reducer에서 사용할 type 및 타입 값 가져오기 위해 정의해놓은 곳 입니다.

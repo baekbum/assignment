@@ -1,8 +1,8 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { lazy, memo, Suspense, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import '../../css/similars/Similars.scss';
-import SimilarItem from './SimilarItem';
+//import SimilarItem from './SimilarItem';
 
 interface IProps {
     state?: any;
@@ -29,15 +29,15 @@ interface IJsonData {
     bookDataId: number;
 };
 
+const SimilarItem = lazy(() => import('./SimilarItem'));
+
 const Similars = memo(({state} : IProps) => {
     const [similarList, setSimilarList] = useState<IJsonData[]>([]);
-    const [init, setInit] = useState<boolean>(false);
     
     useEffect(() => {
         const obj: IJsonData[] | undefined = state.similarsObj;
 
         if (obj !== undefined) {
-            setInit(true);
             setSimilarList(obj);            
         }        
     },[state.similarsObj]);
@@ -53,7 +53,9 @@ const Similars = memo(({state} : IProps) => {
                         <div className='problem-unit-name'>
                             <span>{state.targetObj.unitName}</span>
                         </div>
-                        { init && similarList.length > 0 ? similarList.map((s, i) => <SimilarItem key={s.id} index={i} obj={s}/>) : null }
+                        <Suspense fallback={<div>...loading</div>}>
+                            { similarList.map((s, i) => <SimilarItem key={s.id} index={i} obj={s}/>) }
+                        </Suspense>
                     </>
                 ) : (
                     <div className='disabled'>
