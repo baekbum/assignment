@@ -1,12 +1,8 @@
 import React, { lazy, memo, Suspense, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import '../../css/similars/Similars.scss';
 //import SimilarItem from './SimilarItem';
-
-interface IProps {
-    state?: any;
-};
 
 interface IJsonData {
     id: number;
@@ -31,16 +27,20 @@ interface IJsonData {
 
 const SimilarItem = lazy(() => import('./SimilarItem'));
 
-const Similars = memo(({state} : IProps) => {
+const Similars = memo(() => {
+    const similarsObj = useSelector<any, IJsonData[]>(state => state?.similarsReducer?.similarsObj);
+    const isActive = useSelector<any, boolean>(state => state?.isActiveReducer?.similarsShow);
+    const targetObj = useSelector<any, IJsonData>(state => state.isActiveReducer?.obj);
+
     const [similarList, setSimilarList] = useState<IJsonData[]>([]);
     
     useEffect(() => {
-        const obj: IJsonData[] | undefined = state.similarsObj;
+        const obj: IJsonData[] = similarsObj;
 
         if (obj !== undefined) {
             setSimilarList(obj);            
         }        
-    },[state.similarsObj]);
+    },[similarsObj]);
 
     return (
         <div className='similars-container'>
@@ -48,10 +48,10 @@ const Similars = memo(({state} : IProps) => {
                 <span className='title'>문항 교체/추가</span>
             </div>
             <div className='content'>
-                { state.isActive ? (
+                { isActive ? (
                     <>
                         <div className='problem-unit-name'>
-                            <span>{state.targetObj.unitName}</span>
+                            <span>{targetObj.unitName}</span>
                         </div>
                         <Suspense fallback={<div>...loading</div>}>
                             { similarList.map((s, i) => <SimilarItem key={s.id} index={i} obj={s}/>) }
@@ -71,24 +71,6 @@ const Similars = memo(({state} : IProps) => {
             </div>
         </div>
     );
-}, areEqual);
+});
 
-function areEqual(prevProps: any, nextProps: any) {
-    return (
-        prevProps.state.similarsObj === nextProps.state.similarsObj
-        && prevProps.state.isActive === nextProps.state.isActive
-        && prevProps.state.targetObj === nextProps.state.targetObj
-    );
-}
-
-function mapStateToProps(state: any) {
-    return { 
-        state : {
-            similarsObj : state.similarsReducer.similarsObj,
-            isActive : state.isActiveReducer.similarsShow,
-            targetObj : state.isActiveReducer.obj
-        }
-    };
-}
-
-export default connect(mapStateToProps, null) (Similars);
+export default Similars;

@@ -1,12 +1,10 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Image } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import '../../css/similars/SimilarItem.scss';
 import * as actions from '../../action/Action';
 
 interface IProps {
-    state?: any;
-    dispatch?: any;
     index: number;
     obj: IJsonData;
 };
@@ -49,14 +47,20 @@ interface IChangeProblem {
     (idx: number, obj: IJsonData): void;
 };
 
-const SimilarItem = memo( ({state, dispatch, index, obj}: IProps) => {
+const SimilarItem = ({index, obj}: IProps) => {
+    const problemsObj = useSelector<any, IJsonData[]>(state => state?.problemsReducer?.problemsObj);
+    const similarsObj = useSelector<any, IJsonData[]>(state => state?.similarsReducer?.similarsObj);
+    const targetIndex = useSelector<any, number>(state => state?.isActiveReducer?.index);
+    // eslint-disable-next-line
+    const targetObj = useSelector<any, IJsonData>(state => state.isActiveReducer?.obj);
+    const dispatch = useDispatch<any>();
     const [problemList, setProblemList] = useState<IJsonData[]>([]);
     const [similarList, setSimilarList] = useState<IJsonData[]>([]);
 
     useEffect(() => {
-        setProblemList(state.problemsObj);
-        setSimilarList(state.similarsObj);
-    },[state.problemsObj, state.similarsObj]);
+        setProblemList(problemsObj);
+        setSimilarList(similarsObj);
+    },[problemsObj, similarsObj]);
 
     const assignObj = useCallback<IAssignObj>(() => {
         let pList: IJsonData[] = Object.assign([], problemList);
@@ -73,26 +77,27 @@ const SimilarItem = memo( ({state, dispatch, index, obj}: IProps) => {
     const addProblem = useCallback<IAddProblem>((index, obj) => {
         const newObj: newObject = assignObj();
 
-        newObj.pList.splice(state.targetIndex + 1, 0, obj);
+        newObj.pList.splice(targetIndex + 1, 0, obj);
         newObj.sList.splice(index, 1);
-        dispatch.updateProblems(newObj.pList);
-        dispatch.updateSimilars(newObj.sList);
+
+        dispatch({type : actions.updateProblems(), data : newObj.pList});
+        dispatch({type : actions.updateSimilars(), data : newObj.sList});
         // eslint-disable-next-line
-    },[state, dispatch, problemList, similarList]);
+    },[targetIndex, problemList, similarList]);
 
     const changeProblem = useCallback<IChangeProblem>((index, obj) => {
         const newObj: newObject = assignObj();
         
-        const tempObj: IJsonData = newObj.pList[state.targetIndex];
+        const tempObj: IJsonData = newObj.pList[targetIndex];
 
-        newObj.pList[state.targetIndex] = newObj.sList[index];
+        newObj.pList[targetIndex] = newObj.sList[index];
         newObj.sList[index] = tempObj;
 
-        dispatch.updateProblems(newObj.pList);
-        dispatch.updateSimilars(newObj.sList);
-        dispatch.showSimilars(state.targetIndex, obj);
+        dispatch({type : actions.updateProblems(), data : newObj.pList});
+        dispatch({type : actions.updateSimilars(), data : newObj.sList});
+        dispatch({type : actions.showSimilars(), index : targetIndex, obj : obj});
         // eslint-disable-next-line
-    },[state, dispatch, problemList, similarList]);
+    },[targetIndex, problemList, similarList]);
 
     return (
         <div className='similar-item-container'>
@@ -120,36 +125,6 @@ const SimilarItem = memo( ({state, dispatch, index, obj}: IProps) => {
             </div>
         </div>
     );
-}, areEqual);
+};
 
-function areEqual(prevProps: any, nextProps: any) {
-    return (
-        prevProps.state.problemsObj === nextProps.state.problemsObj
-        && prevProps.state.similarsObj === nextProps.state.similarsObj
-        && prevProps.state.targetIndex === nextProps.state.targetIndex
-        && prevProps.state.targetObj === nextProps.state.targetObj
-    );
-}
-
-function mapStateToProps(state: any) {
-    return { 
-        state : {
-            problemsObj : state.problemsReducer.problemsObj,
-            similarsObj : state.similarsReducer.similarsObj,
-            targetIndex : state.isActiveReducer.index,
-            targetObj : state.isActiveReducer.obj
-        }
-    };
-}
-
-function mapDispatchToProps(dispatch: any) {
-    return {
-        dispatch : {
-            updateProblems: (obj: IJsonData) => dispatch({type : actions.updateProblems(), data : obj}),
-            updateSimilars: (obj: IJsonData) => dispatch({type : actions.updateSimilars(), data : obj}),
-            showSimilars: (index: number, obj: IJsonData) => dispatch({type : actions.showSimilars(), index : index, obj : obj }),
-        }
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps) (SimilarItem);
+export default SimilarItem;

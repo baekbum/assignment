@@ -1,12 +1,10 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Button, Image } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import '../../css/problems/ProblemItem.scss';
 import * as actions from '../../action/Action';
 
 interface IProps {
-    state?: any;
-    dispatch?: any;
     index: number;
     obj: IJsonData;
 };
@@ -44,18 +42,22 @@ interface INewProblems {
     (problemList: IJsonData[], key: number): Promise<IJsonData[]>
 };
 
-const ProblemItem = memo(({state, dispatch, index, obj}: IProps) => {
+const ProblemItem = ({index, obj}: IProps) => {
+    const problemsObj = useSelector<any, IJsonData[]>(state => state?.problemsReducer?.problemsObj);
+    const targetIndex = useSelector<any, number>(state => state?.isActiveReducer?.index);
+    const dispatch = useDispatch<any>();
 
     const showSimilars = useCallback<IShowSimilars>((idx, obj) => {
-        dispatch.showSimilars(idx, obj);
-    },[dispatch])
+        dispatch({type : actions.showSimilars(), index : idx, obj : obj});
+        // eslint-disable-next-line
+    },[])
 
     const deleteProblem = useCallback<IDeleteProblem>(async (id) => {
-        const newState: IJsonData[] = await newProblems(state.problemsObj, id);
-        dispatch.deleteProblem(newState);
-        dispatch.hideSimilars();
+        const newState: IJsonData[] = await newProblems(problemsObj, id);
+        dispatch({type : actions.deleteProblems(), data : newState});
+        dispatch({type : actions.hideSimilars()});
         // eslint-disable-next-line
-    },[state.problemsObj, dispatch]);
+    },[problemsObj, dispatch]);
 
     const newProblems = useCallback<INewProblems>((problemList, key) => {
         return new Promise<IJsonData[]>((resolve, reject) => {
@@ -79,7 +81,7 @@ const ProblemItem = memo(({state, dispatch, index, obj}: IProps) => {
                         <span className='unit-name'>{obj.unitName}</span>
                     </div>
                     <div>
-                        <Button variant="outline-primary" className='similars-btn' onClick={showSimilars.bind(this, index, obj)} active={state.targetIndex === index ? true : false} >유사문항</Button>
+                        <Button variant="outline-primary" className='similars-btn' onClick={showSimilars.bind(this, index, obj)} active={targetIndex === index ? true : false} >유사문항</Button>
                         <Button variant="outline-primary" className='delete-btn' onClick={deleteProblem.bind(this, obj.id)} >삭제</Button>    
                     </div>                    
                 </div>
@@ -94,32 +96,6 @@ const ProblemItem = memo(({state, dispatch, index, obj}: IProps) => {
             </div>
         </div>
     );
-}, areEqual);
+};
 
-function areEqual(prevProps: any, nextProps: any) {
-    return (
-        prevProps.state.problemsObj === nextProps.state.problemsObj
-        && prevProps.state.targetIndex === nextProps.state.targetIndex
-    );
-}
-
-function mapStateToProps(state: any) {
-    return { 
-        state : {
-            problemsObj : state.problemsReducer.problemsObj,
-            targetIndex : state.isActiveReducer.index
-        }
-    };
-}
-
-function mapDispatchToProps(dispatch: any) {
-    return {
-        dispatch : {
-            showSimilars: (index: number, obj: IJsonData) => dispatch({type : actions.showSimilars(), index : index, obj : obj }),
-            hideSimilars: () => dispatch({type : actions.hideSimilars() }),
-            deleteProblem: (obj: IJsonData) => dispatch({type : actions.deleteProblems(), data : obj})
-        }        
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps) (ProblemItem);
+export default ProblemItem;

@@ -1,11 +1,7 @@
 import React, { lazy, memo, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import '../../css/problems/Problems.scss';
 //import ProblemItem from './ProblemItem';
-
-interface IProps {
-    state?: any;
-};
 
 interface IJsonData {
     id: number;
@@ -30,7 +26,8 @@ interface IJsonData {
 
 const ProblemItem = lazy(() => import('./ProblemItem'));
 
-const Problems = memo(({state} : IProps) => {
+const Problems = memo(() => {
+    const problemsObj = useSelector<any, IJsonData[]>(state => state.problemsReducer.problemsObj);
     const [problemList, setProblemList] = useState<IJsonData[]>([]);
     const observer = useRef<any>();
 
@@ -45,18 +42,14 @@ const Problems = memo(({state} : IProps) => {
 
         if (node) observer.current.observe(node);
     }, []);
-
-    useEffect(() => {
-
-    }, []);
     
     useEffect(() => {
-        const obj: IJsonData[] | undefined = state.problemsObj;
+        const obj: IJsonData[] = problemsObj;
 
         if (obj !== undefined) {
             setProblemList(obj);
         }
-    },[state.problemsObj]);
+    },[problemsObj]);
 
     return (
         <div className='problems-container'>
@@ -88,20 +81,6 @@ const Problems = memo(({state} : IProps) => {
             </div>       
         </div>
     );
-}, areEqual);
+});
 
-function areEqual(prevProps: any, nextProps: any) {
-    return (
-        prevProps.state.problemsObj === nextProps.state.problemsObj
-    );
-}
-
-function mapStateToProps(state: any) {
-    return { 
-        state : {
-            problemsObj : state.problemsReducer.problemsObj
-        }
-    };
-}
-
-export default connect(mapStateToProps, null) (Problems);
+export default Problems;
