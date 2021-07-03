@@ -1,55 +1,47 @@
-import * as types from '../action/ActionType';
+import { Action } from "redux";
+import * as AT from "../action/ActionType";
+import * as AP from "../action/types/ActionProps";
 
-interface IState {
-    similarsShow: boolean;
-    index?: number;
-    obj?: object;
+export type state = {
+  similarsShow: boolean;
+  index?: number;
+  obj?: AP.jsonData;
 };
 
-interface IAction {
-    type: string;
-    index: number;
-    obj: IJsonData;
+type showSimilars = Action<"SHOW_SIMILARS"> & {
+  index: number;
+  obj: AP.jsonData;
 };
 
-interface IJsonData {
-    id: number;
-    unitCode: number;
-    answerData: string;
-    problemLevel: number;
-    problemType: string;
-    problemURL: string;
-    unitName: string;
-    needCheckLayout: number;
-    source: number;
-    hide: number;
-    curriculumNumber: number;
-    cebuCode: number;
-    totalTimes: number;
-    correctTimes: number;
-    hwpExist: number;
-    scorable: number;
-    tagTop: null;
-    bookDataId: number;
+type hideSimilars = Action<"HIDE_SIMILARS"> & {
+  index: number;
+  obj: AP.jsonData;
 };
 
-interface IReducer {
-    (state: IState, action: IAction): IState;
+type action = showSimilars | hideSimilars;
+
+export type reducer = {
+  (state: state, action: action): state;
 };
 
 const initialize = {
-    similarsShow : false
+  similarsShow: false,
 };
 
-const isActiveReducer: IReducer = (state: IState = initialize, action: IAction) => {
-    switch(action.type) {
-        case types.SHOW_SIMILARS:
-            return { similarsShow : true,  index : action.index, obj : action.obj }
-        case types.HIDE_SIMILARS:
-            return { similarsShow : false }
-        default:
-            return state;
-    }
-}
+const isActiveReducer: reducer = (state = initialize, action) => {
+  switch (action.type) {
+    case AT.isShow.show_similars:
+      return {
+        ...state,
+        similarsShow: true,
+        index: action.index,
+        obj: action.obj,
+      };
+    case AT.isShow.hide_similars:
+      return { similarsShow: false };
+    default:
+      return state;
+  }
+};
 
 export default isActiveReducer;

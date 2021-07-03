@@ -2,43 +2,23 @@ import React, { lazy, memo, Suspense, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import '../../css/similars/Similars.scss';
-//import SimilarItem from './SimilarItem';
+import type * as AP from '../../action/types/ActionProps';
+import type * as S from '../../store/Store';
 
-interface IJsonData {
-    id: number;
-    unitCode: number;
-    answerData: string;
-    problemLevel: number;
-    problemType: string;
-    problemURL: string;
-    unitName: string;
-    needCheckLayout: number;
-    source: number;
-    hide: number;
-    curriculumNumber: number;
-    cebuCode: number;
-    totalTimes: number;
-    correctTimes: number;
-    hwpExist: number;
-    scorable: number;
-    tagTop: null;
-    bookDataId: number;
-};
+type ASelector = AP.jsonData[] | undefined;
+type OSelector = AP.jsonData | undefined;
 
 const SimilarItem = lazy(() => import('./SimilarItem'));
 
 const Similars = memo(() => {
-    const similarsObj = useSelector<any, IJsonData[]>(state => state?.similarsReducer?.similarsObj);
-    const isActive = useSelector<any, boolean>(state => state?.isActiveReducer?.similarsShow);
-    const targetObj = useSelector<any, IJsonData>(state => state.isActiveReducer?.obj);
-
-    const [similarList, setSimilarList] = useState<IJsonData[]>([]);
+    const similarsObj = useSelector<S.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
+    const targetObj = useSelector<S.reducer, OSelector>(state => state?.isActiveReducer?.obj);
+    const isActive = useSelector<S.reducer, boolean>(state => state?.isActiveReducer?.similarsShow);
+    const [similarList, setSimilarList] = useState<AP.jsonData[]>([]);
     
     useEffect(() => {
-        const obj: IJsonData[] = similarsObj;
-
-        if (obj !== undefined) {
-            setSimilarList(obj);            
+        if (similarsObj !== undefined) {
+            setSimilarList(similarsObj);            
         }        
     },[similarsObj]);
 
@@ -51,7 +31,7 @@ const Similars = memo(() => {
                 { isActive ? (
                     <>
                         <div className='problem-unit-name'>
-                            <span>{targetObj.unitName}</span>
+                            <span>{ targetObj && targetObj.unitName }</span>
                         </div>
                         <Suspense fallback={<div>...loading</div>}>
                             { similarList.map((s, i) => <SimilarItem key={s.id} index={i} obj={s}/>) }

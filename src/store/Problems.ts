@@ -1,50 +1,42 @@
-import * as types from '../action/ActionType';
+import { Action } from "redux";
+import * as AT from "../action/ActionType";
+import * as AP from "../action/types/ActionProps";
 
-interface IState {
-    problemsObj?: Array<IJsonData>;
+export type state = {
+  problemsObj?: AP.jsonData[];
 };
 
-interface IAction {
-    type: string;
-    data: Array<IJsonData>;
+type saveProblems = Action<"SAVE_PROBLEMS"> & {
+  data: AP.jsonData[];
 };
 
-interface IJsonData {
-    id: number;
-    unitCode: number;
-    answerData: string;
-    problemLevel: number;
-    problemType: string;
-    problemURL: string;
-    unitName: string;
-    needCheckLayout: number;
-    source: number;
-    hide: number;
-    curriculumNumber: number;
-    cebuCode: number;
-    totalTimes: number;
-    correctTimes: number;
-    hwpExist: number;
-    scorable: number;
-    tagTop: null;
-    bookDataId: number;
+type updateProblems = Action<"UPDATE_PROBLEMS"> & {
+  data: AP.jsonData[];
 };
 
-interface IReducer {
-    (state: IState, action: IAction): IState;
+type deleteProblems = Action<"DELETE_PROBLEMS"> & {
+  data: AP.jsonData[];
 };
 
-const problemsReducer: IReducer = (state: IState = {}, action: IAction) => {
-    switch(action.type) {
-        case types.SAVE_PROBLEMS:
-            return { problemsObj : action.data }
-        case types.UPDATE_PROBLEMS:
-            return { problemsObj : action.data }
-        case types.DELETE_PROBLEMS:
-            return { problemsObj : action.data }
-        default:
-            return state;
-    }
-}
+type action = saveProblems | updateProblems | deleteProblems;
+
+export type reducer = {
+  (state: state, action: action): state;
+};
+
+const initializeState = {};
+
+const problemsReducer: reducer = (state = initializeState, action) => {
+  switch (action.type) {
+    case AT.problems.save_problems:
+      return { ...state, problemsObj: action.data };
+    case AT.problems.update_problems:
+      return { ...state, problemsObj: action.data };
+    case AT.problems.delete_problems:
+      return { ...state, problemsObj: action.data };
+    default:
+      return state;
+  }
+};
 
 export default problemsReducer;

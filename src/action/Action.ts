@@ -1,13 +1,30 @@
-import * as types from './ActionType';
+import * as types from "./ActionType";
+import type * as AP from "./types/ActionProps";
 
-interface IReturn {
-    (): string;
-}
+export const saveProblems = (IData: AP.jsonData[]) => {
+  return { type: types.problems.save_problems, data: IData };
+};
 
-export const saveProblems: IReturn = () => (types.SAVE_PROBLEMS);
-export const updateProblems: IReturn = () => (types.UPDATE_PROBLEMS);
-export const deleteProblems: IReturn = () => (types.DELETE_PROBLEMS);
-export const saveSimilars: IReturn = () => (types.SAVE_SIMILARS);
-export const updateSimilars: IReturn = () => (types.UPDATE_SIMILARS);
-export const showSimilars: IReturn = () => (types.SHOW_SIMILARS);
-export const hideSimilars: IReturn = () => (types.HIDE_SIMILARS);
+export const updateProblems = (IData: AP.jsonData[]) => {
+  return { type: types.problems.update_problems, data: IData };
+};
+
+export const deleteProblems = (IData: AP.jsonData[]) => {
+  return { type: types.problems.delete_problems, data: IData };
+};
+
+export const saveSimilars = (IData: AP.jsonData[]) => {
+  return { type: types.similars.save_similars, data: IData };
+};
+
+export const updateSimilars = (IData: AP.jsonData[]) => {
+  return { type: types.similars.update_similars, data: IData };
+};
+
+export const showSimilars = (IIndex: number, IObj: AP.jsonData) => {
+  return { type: types.isShow.show_similars, index: IIndex, obj: IObj };
+};
+
+export const hideSimilars = () => {
+  return { type: types.isShow.hide_similars };
+};

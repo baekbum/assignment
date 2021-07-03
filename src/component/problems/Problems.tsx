@@ -1,34 +1,16 @@
 import React, { lazy, memo, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import '../../css/problems/Problems.scss';
-//import ProblemItem from './ProblemItem';
+import type * as AP from '../../action/types/ActionProps';
+import type * as S from '../../store/Store';
 
-interface IJsonData {
-    id: number;
-    unitCode: number;
-    answerData: string;
-    problemLevel: number;
-    problemType: string;
-    problemURL: string;
-    unitName: string;
-    needCheckLayout: number;
-    source: number;
-    hide: number;
-    curriculumNumber: number;
-    cebuCode: number;
-    totalTimes: number;
-    correctTimes: number;
-    hwpExist: number;
-    scorable: number;
-    tagTop: null;
-    bookDataId: number;
-};
+type ASelector = AP.jsonData[] | undefined;
 
 const ProblemItem = lazy(() => import('./ProblemItem'));
 
 const Problems = memo(() => {
-    const problemsObj = useSelector<any, IJsonData[]>(state => state.problemsReducer.problemsObj);
-    const [problemList, setProblemList] = useState<IJsonData[]>([]);
+    const problemsObj = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
+    const [problemList, setProblemList] = useState<AP.jsonData[]>([]);
     const observer = useRef<any>();
 
     const lastElementRef = useCallback((node) => {
@@ -44,10 +26,8 @@ const Problems = memo(() => {
     }, []);
     
     useEffect(() => {
-        const obj: IJsonData[] = problemsObj;
-
-        if (obj !== undefined) {
-            setProblemList(obj);
+        if (problemsObj !== undefined) {
+            setProblemList(problemsObj);
         }
     },[problemsObj]);
 
@@ -58,24 +38,17 @@ const Problems = memo(() => {
             </div>
            <div className='content'>
                 <Suspense fallback={<div>...loading</div>}>
-                    { 
-                        problemList.map((p, i) => 
-                            { 
-                                if (problemList.length === i + 1) {
-                                    return (
-                                        <div ref={lastElementRef} key={p.id}>
-                                            <ProblemItem index={i} obj={p} />
-                                        </div>
-                                    )
-                                } else {
-                                    return (
-                                        <div key={p.id}>
-                                            <ProblemItem index={i} obj={p} />
-                                        </div>
-                                    )
-                                }
-                            }                        
-                        ) 
+                    { problemList.length > 0 ? ( 
+                        problemList.map((p, i) => {
+                            const content = <ProblemItem index={i} obj={p} />;
+
+                            return (problemList.length === (i + 1)) ? (
+                                <div ref={lastElementRef} key={p.id}>{content}</div>
+                            ) : (
+                                <div key={p.id}>{content}</div>
+                            )
+                        })
+                    ) : null
                     }
                 </Suspense>
             </div>       

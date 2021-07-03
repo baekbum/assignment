@@ -1,48 +1,40 @@
-import * as types from '../action/ActionType';
+import { Action } from "redux";
+import * as AT from "../action/ActionType";
+import * as AP from "../action/types/ActionProps";
 
-interface IState {
-    similarsObj?: Array<IJsonData>;
+export type state = {
+  similarsObj?: AP.jsonData[];
 };
 
-interface IAction {
-    type: string;
-    data: Array<IJsonData>;
+type saveSimilars = Action<"SAVE_SIMILARS"> & {
+  data: AP.jsonData[];
 };
 
-interface IJsonData {
-    id: number;
-    unitCode: number;
-    answerData: string;
-    problemLevel: number;
-    problemType: string;
-    problemURL: string;
-    unitName: string;
-    needCheckLayout: number;
-    source: number;
-    hide: number;
-    curriculumNumber: number;
-    cebuCode: number;
-    totalTimes: number;
-    correctTimes: number;
-    hwpExist: number;
-    scorable: number;
-    tagTop: null;
-    bookDataId: number;
+type updateSimilars = Action<"UPDATE_SIMILARS"> & {
+  data: AP.jsonData[];
 };
 
-interface IReducer {
-    (state: IState, action: IAction): IState;
+type deleteSimilars = Action<"DELETE_SIMILARS"> & {
+  data: AP.jsonData[];
 };
 
-const similarsReducer: IReducer = (state: IState = {}, action: IAction) => {
-    switch(action.type) {
-        case types.SAVE_SIMILARS:
-            return { similarsObj : action.data }
-        case types.UPDATE_SIMILARS:
-            return { similarsObj : action.data }
-        default:
-            return state;
-    }
-}
+type action = saveSimilars | updateSimilars | deleteSimilars;
+
+export type reducer = {
+  (state: state, action: action): state;
+};
+
+const initializeState = {};
+
+const similarsReducer: reducer = (state = initializeState, action) => {
+  switch (action.type) {
+    case AT.similars.save_similars:
+      return { ...state, similarsObj: action.data };
+    case AT.similars.update_similars:
+      return { ...state, similarsObj: action.data };
+    default:
+      return state;
+  }
+};
 
 export default similarsReducer;

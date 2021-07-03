@@ -1,7 +1,17 @@
-export const SAVE_PROBLEMS: string = 'SAVE_PROBLEMS';
-export const UPDATE_PROBLEMS: string = 'UPDATE_PROBLEMS';
-export const DELETE_PROBLEMS: string = 'DELETE_PROBLEMS';
-export const SAVE_SIMILARS: string = 'SAVE_SIMILARS';
-export const UPDATE_SIMILARS: string = 'UPDATE_SIMILARS';
-export const SHOW_SIMILARS: string = 'SHOW_SIMILARS';
-export const HIDE_SIMILARS: string = 'HIDE_SIMILARS';
+import type * as AP from "./types/ActionProps";
+
+export const problems: AP.problemsType = {
+  save_problems: "SAVE_PROBLEMS",
+  update_problems: "UPDATE_PROBLEMS",
+  delete_problems: "DELETE_PROBLEMS",
+};
+
+export const similars: AP.similarsType = {
+  save_similars: "SAVE_SIMILARS",
+  update_similars: "UPDATE_SIMILARS",
+};
+
+export const isShow: AP.isShowType = {
+  show_similars: "SHOW_SIMILARS",
+  hide_similars: "HIDE_SIMILARS",
+};

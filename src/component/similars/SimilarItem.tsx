@@ -3,101 +3,92 @@ import { Button, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import '../../css/similars/SimilarItem.scss';
 import * as actions from '../../action/Action';
+import type * as AP from '../../action/types/ActionProps';
+import type * as S from '../../store/Store';
 
-interface IProps {
+type ASelector = AP.jsonData[] | undefined;
+type NSelector = number | undefined;
+
+type props = {
     index: number;
-    obj: IJsonData;
+    obj: AP.jsonData;
 };
 
-interface IJsonData {
-    id: number;
-    unitCode: number;
-    answerData: string;
-    problemLevel: number;
-    problemType: string;
-    problemURL: string;
-    unitName: string;
-    needCheckLayout: number;
-    source: number;
-    hide: number;
-    curriculumNumber: number;
-    cebuCode: number;
-    totalTimes: number;
-    correctTimes: number;
-    hwpExist: number;
-    scorable: number;
-    tagTop: null;
-    bookDataId: number;
+type newObject = {
+    pList: AP.jsonData[];
+    sList: AP.jsonData[];
 };
 
-interface newObject {
-    pList: IJsonData[];
-    sList: IJsonData[];
-};
-
-interface IAssignObj {
+type assignObj = {
     (): newObject;
 };
 
-interface IAddProblem {
-    (idx: number, obj: IJsonData): void;
+type addProblem = {
+    (idx: number, obj: AP.jsonData): void;
 };
 
-interface IChangeProblem {
-    (idx: number, obj: IJsonData): void;
+type changeProblem = {
+    (idx: number, obj: AP.jsonData): void;
 };
 
-const SimilarItem = ({index, obj}: IProps) => {
-    const problemsObj = useSelector<any, IJsonData[]>(state => state?.problemsReducer?.problemsObj);
-    const similarsObj = useSelector<any, IJsonData[]>(state => state?.similarsReducer?.similarsObj);
-    const targetIndex = useSelector<any, number>(state => state?.isActiveReducer?.index);
-    // eslint-disable-next-line
-    const targetObj = useSelector<any, IJsonData>(state => state.isActiveReducer?.obj);
-    const dispatch = useDispatch<any>();
-    const [problemList, setProblemList] = useState<IJsonData[]>([]);
-    const [similarList, setSimilarList] = useState<IJsonData[]>([]);
+type dispatchAct = {
+    (pList: AP.jsonData[], sList: AP.jsonData[]): void;
+}
 
-    useEffect(() => {
-        setProblemList(problemsObj);
-        setSimilarList(similarsObj);
-    },[problemsObj, similarsObj]);
+const SimilarItem = ({index, obj}: props) => {
+    const dispatch = useDispatch();
+    const problemsObj = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
+    const similarsObj = useSelector<S.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
+    const targetIndex = useSelector<S.reducer, NSelector>(state => state?.isActiveReducer?.index);
+    //const targetObj = useSelector<S.reducer, OSelector>(state => state.isActiveReducer?.obj);
+    const [problemList, setProblemList] = useState<AP.jsonData[]>([]);
+    const [similarList, setSimilarList] = useState<AP.jsonData[]>([]);
 
-    const assignObj = useCallback<IAssignObj>(() => {
-        let pList: IJsonData[] = Object.assign([], problemList);
-        let sList: IJsonData[] = Object.assign([], similarList);
+    const assignObj = useCallback<assignObj>(() => {
+        const pList = Object.assign([], problemList);
+        const sList = Object.assign([], similarList);
 
-        const obj: newObject = {
-            'pList': pList,
-            'sList': sList
-        }
-
-        return obj;        
+        return { 'pList': pList, 'sList': sList };
     },[problemList, similarList]);
 
-    const addProblem = useCallback<IAddProblem>((index, obj) => {
-        const newObj: newObject = assignObj();
-
-        newObj.pList.splice(targetIndex + 1, 0, obj);
-        newObj.sList.splice(index, 1);
-
-        dispatch({type : actions.updateProblems(), data : newObj.pList});
-        dispatch({type : actions.updateSimilars(), data : newObj.sList});
-        // eslint-disable-next-line
-    },[targetIndex, problemList, similarList]);
-
-    const changeProblem = useCallback<IChangeProblem>((index, obj) => {
-        const newObj: newObject = assignObj();
+    const addProblem = useCallback<addProblem>((index, obj) => {
+        const newObj = assignObj();
         
-        const tempObj: IJsonData = newObj.pList[targetIndex];
+        if (newObj !== undefined && targetIndex !== undefined) {
+            newObj.pList.splice(targetIndex + 1, 0, obj);
+            newObj.sList.splice(index, 1);
 
-        newObj.pList[targetIndex] = newObj.sList[index];
-        newObj.sList[index] = tempObj;
+            dispatchAct(newObj.pList, newObj.sList);
+        }
+        // eslint-disable-next-line
+    },[dispatch, problemList, similarList, targetIndex]);
 
-        dispatch({type : actions.updateProblems(), data : newObj.pList});
-        dispatch({type : actions.updateSimilars(), data : newObj.sList});
-        dispatch({type : actions.showSimilars(), index : targetIndex, obj : obj});
+    const changeProblem = useCallback<changeProblem>((index, obj) => {
+        const newObj = assignObj();
+
+        if (newObj !== undefined && targetIndex !== undefined) {
+            const tempObj: AP.jsonData = newObj.pList[targetIndex];
+
+            newObj.pList[targetIndex] = newObj.sList[index];
+            newObj.sList[index] = tempObj;
+
+            dispatchAct(newObj.pList, newObj.sList);
+            dispatch(actions.showSimilars(targetIndex, obj));
+        }        
         // eslint-disable-next-line
     },[targetIndex, problemList, similarList]);
+
+    const dispatchAct = useCallback<dispatchAct>((pList, sList) => {
+        dispatch(actions.updateProblems(pList));
+        dispatch(actions.updateSimilars(sList));
+        // eslint-disable-next-line
+    },[]);
+
+    useEffect(() => {
+        problemsObj ? setProblemList(problemsObj) : setProblemList([]);
+        similarsObj ? setSimilarList(similarsObj) : setSimilarList([]);
+
+    },[problemsObj, similarsObj]);
 
     return (
         <div className='similar-item-container'>
