@@ -1,21 +1,29 @@
 import React, { memo, useEffect } from 'react';
-import { useMemo } from 'react';
+import { useState } from 'react';
+//import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import Problems from './component/problems/Problems';
-import Similars from './component/similars/Similars';
+//import Problems from './component/problems/Problems';
+//import Similars from './component/similars/Similars';
 import './css/App.scss';
 import * as LD from './utils/LoadData'
 
-const App = memo(() => {
+type props = {
+  childProps?: JSX.Element[];
+};
+
+const App = memo(({childProps}: props) => {
   const dispatch = useDispatch();
-  const itemList = useMemo<JSX.Element[]>(() => {
-    return [<Problems/>, <Similars/>];
-  },[])
+  const [childList] = useState<JSX.Element[] | undefined>(childProps);
+  const pUrl = 'http://localhost:3000/fe-problems.json';
+  const sUrl = 'http://localhost:3000/fe-similars.json';
+  // const itemList = useMemo<JSX.Element[]>(() => {
+  //   return [<Problems/>, <Similars/>];
+  // },[]);
 
   useEffect(() => {
     try {
-      LD.loadProblemsData(dispatch);
-      LD.loadSimilarsData(dispatch);  
+      LD.loadData(dispatch, pUrl, 'PROBLEM');
+      LD.loadData(dispatch, sUrl, 'SIMILAR');  
     } catch (error) {
       console.log(error);
     };    
@@ -24,7 +32,17 @@ const App = memo(() => {
   return (
     <div className="App">
       <div className='main-container'>
-        { itemList.length > 0 
+        { childList 
+        &&  childList.map((content, index) => {
+              return (
+                <div className='item-container' key={index}>
+                  {content}
+                </div>
+              )
+            })
+        }
+
+        {/* { itemList.length > 0 
         ? itemList.map((content, index) => {
           return (
             <div className='item-container' key={index}>
@@ -33,7 +51,7 @@ const App = memo(() => {
           )
         })
         : null
-        }
+        } */}
       </div>
     </div>
   );

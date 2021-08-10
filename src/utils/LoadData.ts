@@ -1,30 +1,19 @@
 import axios from "axios";
 import * as actions from "../action/Action";
 
-type loadProblemsProps = {
-  (dispatch: any): void;
+type loadDataProps = {
+  (dispatch: any, url: string, type: string): void;
 };
 
-type loadSimilarsProps = {
-  (dispatch: any): void;
-};
-
-export const loadProblemsData: loadProblemsProps = (dispatch) => {
+export const loadData: loadDataProps = (dispatch, url, type) => {
   axios
-    .get("http://localhost:3000/fe-problems.json")
+    .get(url)
     .then((result) => {
-      dispatch(actions.saveProblems(result.data.data));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-export const loadSimilarsData: loadSimilarsProps = (dispatch) => {
-  axios
-    .get("http://localhost:3000/fe-similars.json")
-    .then((result) => {
-      dispatch(actions.saveSimilars(result.data.data));
+      if (type === "PROBLEM") {
+        dispatch(actions.saveProblems(result.data.data));
+      } else if (type === "SIMILAR") {
+        dispatch(actions.saveSimilars(result.data.data));
+      }
     })
     .catch((err) => {
       console.log(err);

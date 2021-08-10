@@ -6,7 +6,20 @@ import type * as S from '../../store/Store';
 
 type ASelector = AP.jsonData[] | undefined;
 
+
 const ProblemItem = lazy(() => import('./ProblemItem'));
+
+const setObserver = (observer: any, node: HTMLElement) => {
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+            console.log('보임!!');
+        }
+    });
+
+    if (node) observer.current.observe(node);
+};
 
 const Problems = memo(() => {
     const problemsObj = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
@@ -14,15 +27,7 @@ const Problems = memo(() => {
     const observer = useRef<any>();
 
     const lastElementRef = useCallback((node) => {
-        if (observer.current) observer.current.disconnect();
-
-        observer.current = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                console.log('보임!!');
-            }
-        });
-
-        if (node) observer.current.observe(node);
+        setObserver(observer, node);    
     }, []);
     
     useEffect(() => {
