@@ -1,11 +1,11 @@
-import React, { lazy, memo, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import React, { lazy, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import '../../css/problems/Problems.scss';
 import type * as AP from '../../action/types/ActionProps';
 import type * as S from '../../store/Store';
+import RenderItems from '../common/RenderItems';
 
 type ASelector = AP.jsonData[] | undefined;
-
 
 const ProblemItem = lazy(() => import('./ProblemItem'));
 
@@ -22,19 +22,34 @@ const setObserver = (observer: any, node: HTMLElement) => {
 };
 
 const Problems = memo(() => {
-    const problemsObj = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
-    const [problemList, setProblemList] = useState<AP.jsonData[]>([]);
+    const problemList = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
+    const [items, setItems] = useState<JSX.Element[]>();
     const observer = useRef<any>();
 
     const lastElementRef = useCallback((node) => {
         setObserver(observer, node);    
     }, []);
+
+    const render = (problemList: AP.jsonData[]) => {
+        return (
+            problemList.map((p, i) => {
+                const content = <ProblemItem index={i} obj={p} />;
+    
+                return (problemList.length === (i + 1)) ? (
+                    <div ref={lastElementRef} key={p.id}>{content}</div>
+                ) : (
+                    <div key={p.id}>{content}</div>
+                )
+            })
+        );
+    }
     
     useEffect(() => {
-        if (problemsObj !== undefined) {
-            setProblemList(problemsObj);
+        if (problemList) {
+            setItems(render(problemList));
         }
-    },[problemsObj]);
+        // eslint-disable-next-line
+    },[problemList]);
 
     return (
         <div className='problems-container'>
@@ -42,22 +57,9 @@ const Problems = memo(() => {
                 <span className='title'>학습지 상세 편집</span>
             </div>
            <div className='content'>
-                <Suspense fallback={<div>...loading</div>}>
-                    { problemList.length > 0 ? ( 
-                        problemList.map((p, i) => {
-                            const content = <ProblemItem index={i} obj={p} />;
-
-                            return (problemList.length === (i + 1)) ? (
-                                <div ref={lastElementRef} key={p.id}>{content}</div>
-                            ) : (
-                                <div key={p.id}>{content}</div>
-                            )
-                        })
-                    ) : null
-                    }
-                </Suspense>
+               <RenderItems children={items} />
             </div>       
-        </div>
+        </div>        
     );
 });
 

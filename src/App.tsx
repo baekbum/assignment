@@ -19,6 +19,18 @@ const App = memo(({childProps}: props) => {
   // const itemList = useMemo<JSX.Element[]>(() => {
   //   return [<Problems/>, <Similars/>];
   // },[]);
+  const renderItem = (childList?: JSX.Element[]) => {
+    return (
+      childList &&
+        childList.map((content, index) => {
+          return (
+            <div className='item-container' key={index}>
+              {content}
+            </div>
+          )
+        })
+    );
+  };
 
   useEffect(() => {
     try {
@@ -32,26 +44,7 @@ const App = memo(({childProps}: props) => {
   return (
     <div className="App">
       <div className='main-container'>
-        { childList 
-        &&  childList.map((content, index) => {
-              return (
-                <div className='item-container' key={index}>
-                  {content}
-                </div>
-              )
-            })
-        }
-
-        {/* { itemList.length > 0 
-        ? itemList.map((content, index) => {
-          return (
-            <div className='item-container' key={index}>
-              {content}
-            </div>
-          )
-        })
-        : null
-        } */}
+        { renderItem(childList) }
       </div>
     </div>
   );
