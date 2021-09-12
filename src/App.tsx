@@ -1,11 +1,23 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import React, { memo, useEffect } from 'react';
 import { useState } from 'react';
-//import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-//import Problems from './component/problems/Problems';
-//import Similars from './component/similars/Similars';
 import './css/App.scss';
 import * as LD from './utils/LoadData'
+
+const mainContainer = css`
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+`;
+
+const itemContainer = css`
+  height: 100%;
+  width: 50vw;
+  display: flex;
+`;
 
 type props = {
   childProps?: JSX.Element[];
@@ -24,7 +36,7 @@ const App = memo(({childProps}: props) => {
       childList &&
         childList.map((content, index) => {
           return (
-            <div className='item-container' key={index}>
+            <div css={itemContainer} key={index}>
               {content}
             </div>
           )
@@ -43,7 +55,7 @@ const App = memo(({childProps}: props) => {
 
   return (
     <div className="App">
-      <div className='main-container'>
+      <div css={mainContainer}>
         { renderItem(childList) }
       </div>
     </div>
