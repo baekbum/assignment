@@ -1,10 +1,6 @@
 import React, { Suspense } from 'react';
 
-type props = {
-    children?: JSX.Element[];
-};
-
-const RenderItems = ({children}: props) => {
+const RenderItems = ({ children } : any) => {
     return (
         <Suspense fallback={<div>...loading</div>}>
             { children }

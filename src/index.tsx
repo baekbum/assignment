@@ -8,11 +8,12 @@ import store from './store/Store';
 import Problems from './component/problems/Problems';
 import Similars from './component/similars/Similars';
 
-const children = [<Problems />,<Similars />];
-
 ReactDOM.render(
   <Provider store={store}>
-    <App childProps={children}/>
+    <App>
+      <Problems />
+      <Similars />
+    </App>
   </Provider>,
   document.getElementById('root')
 );
