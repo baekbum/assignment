@@ -1,9 +1,11 @@
-import React, { lazy, memo, Suspense, useEffect, useState } from 'react';
+/** @jsxImportSource @emotion/react */
+import React, { lazy, memo, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import '../../css/similars/Similars.scss';
 import type * as AP from '../../action/types/ActionProps';
-import type * as S from '../../store/Store';
+import type * as Store from '../../store/Store';
+import { Div, Span, RenderItems } from '../common/Elements';
+import * as S from '../../css/similars/Similars';
 
 type ASelector = AP.jsonData[] | undefined;
 type OSelector = AP.jsonData | undefined;
@@ -11,9 +13,9 @@ type OSelector = AP.jsonData | undefined;
 const SimilarItem = lazy(() => import('./SimilarItem'));
 
 const Similars = memo(() => {
-    const similarsObj = useSelector<S.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
-    const targetObj = useSelector<S.reducer, OSelector>(state => state?.isActiveReducer?.obj);
-    const isActive = useSelector<S.reducer, boolean>(state => state?.isActiveReducer?.similarsShow);
+    const similarsObj = useSelector<Store.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
+    const targetObj = useSelector<Store.reducer, OSelector>(state => state?.isActiveReducer?.obj);
+    const isActive = useSelector<Store.reducer, boolean>(state => state?.isActiveReducer?.similarsShow);
     const [similarList, setSimilarList] = useState<AP.jsonData[]>([]);
     
     useEffect(() => {
@@ -23,33 +25,33 @@ const Similars = memo(() => {
     },[similarsObj]);
 
     return (
-        <div className='similars-container'>
-            <div className='header'>
-                <span className='title'>문항 교체/추가</span>
-            </div>
-            <div className='content'>
+        <Div className='similars-container' css={S.similarsContainer}>
+            <Div className='header' css={S.header}>
+                <Span className='title' css={S.title}>문항 교체/추가</Span>
+            </Div>
+            <Div className='content' css={S.content}>
                 { isActive ? (
-                    <>
-                        <div className='problem-unit-name'>
-                            <span>{ targetObj && targetObj.unitName }</span>
-                        </div>
-                        <Suspense fallback={<div>...loading</div>}>
+                    <Div>
+                        <Div className='problem-unit-name' css={S.problemUnitName}>
+                            <Span>{ targetObj && targetObj.unitName }</Span>
+                        </Div>
+                        <RenderItems>
                             { similarList.map((s, i) => <SimilarItem key={s.id} index={i} obj={s}/>) }
-                        </Suspense>
-                    </>
+                        </RenderItems>
+                    </Div>
                 ) : (
-                    <div className='disabled'>
-                        <div style={{display: 'flex', alignItems: 'center'}}>
-                            <Button variant="outline-primary" className='similars-btn' disabled >유사문항</Button>
-                            <span className='disabled-span'>버튼을 누르면</span>
-                        </div>
-                        <div>
-                            <span className='disabled-span'>해당 문제의 유사 문형을 볼 수 있습니다.</span>
-                        </div>
-                    </div>        
+                    <Div className='disabled' css={S.disabled}>
+                        <Div className='disabledTop' css={S.disabledTop}>
+                            <Button variant="outline-primary" className='similars-btn' css={S.similarsBtn} disabled >유사문항</Button>
+                            <Span className='disabled-span' css={S.disabledSpan}>버튼을 누르면</Span>
+                        </Div>
+                        <Div>
+                            <Span className='disabled-span' css={S.disabledSpan}>해당 문제의 유사 문형을 볼 수 있습니다.</Span>
+                        </Div>
+                    </Div>      
                 )}
-            </div>
-        </div>
+            </Div>
+        </Div>
     );
 });
 

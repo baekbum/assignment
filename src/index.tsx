@@ -1,6 +1,8 @@
+/** @jsxImportSource @emotion/react */
+import { Global } from "@emotion/react";
+import { style } from './css/index';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './css/index.scss';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
@@ -10,6 +12,7 @@ import Similars from './component/similars/Similars';
 
 ReactDOM.render(
   <Provider store={store}>
+    <Global styles={style} />
     <App>
       <Problems />
       <Similars />

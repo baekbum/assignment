@@ -1,10 +1,12 @@
+/** @jsxImportSource @emotion/react */
 import React, { useCallback } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import '../../css/problems/ProblemItem.scss';
 import * as actions from '../../action/Action';
 import type * as AP from '../../action/types/ActionProps';
-import type * as S from '../../store/Store';
+import type * as Store from '../../store/Store';
+import { Div, Span } from '../common/Elements';
+import * as PI from '../../css/problems/ProblemItem';
 
 type ASelector = AP.jsonData[] | undefined;
 type NSelector = number | undefined;
@@ -27,8 +29,8 @@ type newProblems = {
 };
 
 const ProblemItem = ({index, obj}: props) => {
-    const problemsObj = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
-    const targetIndex = useSelector<S.reducer, NSelector>(state => state?.isActiveReducer?.index);
+    const problemsObj = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
+    const targetIndex = useSelector<Store.reducer, NSelector>(state => state?.isActiveReducer?.index);
     const dispatch = useDispatch();
 
     const showSimilars = useCallback<showSimilars>((idx, obj) => {
@@ -63,30 +65,30 @@ const ProblemItem = ({index, obj}: props) => {
     },[]);
 
     return (
-        <div className='problem-item-container'>
-            <div className='header'>
-                <div style={{display: 'flex', width: '12%', alignItems: 'center', justifyContent: 'center'}}>
-                    <span className='problem-type'>{obj.problemType}</span>
-                </div>
-                <div style={{width: '88%', padding: '1em', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <div>
-                        <span className='unit-name'>{obj.unitName}</span>
-                    </div>
-                    <div>
-                        <Button variant="outline-primary" className='similars-btn' onClick={showSimilars.bind(this, index, obj)} active={targetIndex === index ? true : false} >유사문항</Button>
-                        <Button variant="outline-primary" className='delete-btn' onClick={deleteProblem.bind(this, obj.id)} >삭제</Button>    
-                    </div>                    
-                </div>
-            </div>
-            <div className='content'>
-                <div style={{display: 'flex', width: '12%', justifyContent: 'center'}}>
-                    <span className='index'>{index + 1}</span>
-                </div>
-                <div style={{width: '88%', padding: '1em'}}>
+        <Div className='problem-item-container' css={PI.problemsItemContainer}>
+            <Div className='header' css={PI.header}>
+                <Div className='header-left' css={PI.headerLeft}>
+                    <Span className='problem-type' css={PI.problemType}>{obj.problemType}</Span>
+                </Div>
+                <Div className='header-right' css={PI.headerRight}>
+                    <Div>
+                        <Span className='unit-name' css={PI.unitName}>{obj.unitName}</Span>
+                    </Div>
+                    <Div>
+                        <Button variant="outline-primary" className='similars-btn' css={PI.similarsBtn} onClick={showSimilars.bind(null, index, obj)} active={targetIndex === index ? true : false} >유사문항</Button>
+                        <Button variant="outline-primary" className='delete-btn' css={PI.deleteBtn} onClick={deleteProblem.bind(null, obj.id)} >삭제</Button>    
+                    </Div>
+                </Div>
+            </Div>
+            <Div className='content' css={PI.content}>
+                <Div className='content-left' css={PI.contentLeft}>
+                    <Span className='index' css={PI.index}>{index + 1}</Span>
+                </Div>
+                <Div className='content-right' css={PI.contentRight}>
                     <Image src={obj.problemURL} rounded />
-                </div>
-            </div>
-        </div>
+                </Div>
+            </Div>
+        </Div>
     );
 };
 

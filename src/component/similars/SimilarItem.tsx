@@ -1,10 +1,12 @@
+/** @jsxImportSource @emotion/react */
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import '../../css/similars/SimilarItem.scss';
 import * as actions from '../../action/Action';
 import type * as AP from '../../action/types/ActionProps';
-import type * as S from '../../store/Store';
+import type * as Store from '../../store/Store';
+import { Div, Span } from '../common/Elements';
+import * as SI from '../../css/similars/SimilarItem';
 
 type ASelector = AP.jsonData[] | undefined;
 type NSelector = number | undefined;
@@ -37,10 +39,10 @@ type dispatchAct = {
 
 const SimilarItem = ({index, obj}: props) => {
     const dispatch = useDispatch();
-    const problemsObj = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
-    const similarsObj = useSelector<S.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
-    const targetIndex = useSelector<S.reducer, NSelector>(state => state?.isActiveReducer?.index);
-    //const targetObj = useSelector<S.reducer, OSelector>(state => state.isActiveReducer?.obj);
+    const problemsObj = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
+    const similarsObj = useSelector<Store.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
+    const targetIndex = useSelector<Store.reducer, NSelector>(state => state?.isActiveReducer?.index);
+    //const targetObj = useSelector<Store.reducer, OSelector>(state => state.isActiveReducer?.obj);
     const [problemList, setProblemList] = useState<AP.jsonData[]>([]);
     const [similarList, setSimilarList] = useState<AP.jsonData[]>([]);
 
@@ -91,30 +93,30 @@ const SimilarItem = ({index, obj}: props) => {
     },[problemsObj, similarsObj]);
 
     return (
-        <div className='similar-item-container'>
-            <div className='header'>
-                <div style={{display: 'flex', width: '12%', alignItems: 'center', justifyContent: 'center'}}>
-                    <span className='problem-type'>{obj.problemType}</span>
-                </div>
-                <div style={{width: '88%', padding: '1em', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <div>
-                        <span className='unit-name'>{obj.unitName}</span>
-                    </div>
-                    <div>
-                        <Button variant="outline-primary" className='similars-btn' onClick={addProblem.bind(this, index, obj)}>추가</Button>
-                        <Button variant="outline-primary" className='delete-btn' onClick={changeProblem.bind(this, index, obj)}>교체</Button>    
-                    </div>                    
-                </div>
-            </div>
-            <div className='content'>
-                <div style={{display: 'flex', width: '12%', justifyContent: 'center'}}>
-                    <span className='index'>{index + 1}</span>
-                </div>
-                <div style={{width: '88%', padding: '1em'}}>
+        <Div className='similar-item-container' css={SI.similarItemContainer}>
+            <Div className='header' css={SI.header}>
+                <Div className='header-left' css={SI.headerLeft}>
+                    <Span className='problem-type' css={SI.problemType}>{obj.problemType}</Span>
+                </Div>
+                <Div className='header-right' css={SI.headerRight}>
+                    <Div>
+                        <Span className='unit-name'>{obj.unitName}</Span>
+                    </Div>
+                    <Div>
+                        <Button variant="outline-primary" className='similars-btn' css={SI.similarsBtn} onClick={addProblem.bind(null, index, obj)}>추가</Button>
+                        <Button variant="outline-primary" className='delete-btn' css={SI.deleteBtn} onClick={changeProblem.bind(null, index, obj)}>교체</Button>
+                    </Div>
+                </Div>
+            </Div>
+            <Div className='content' css={SI.content}>
+                <Div className='content-left' css={SI.contentLeft}>
+                    <Span className='index' css={SI.index}>{index + 1}</Span>
+                </Div>
+                <Div className='content-right' css={SI.contentRight}>
                     <Image src={obj.problemURL} rounded />
-                </div>
-            </div>
-        </div>
+                </Div>
+            </Div>
+        </Div>
     );
 };
 

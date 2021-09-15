@@ -2,17 +2,16 @@
 import React, { lazy, memo, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type * as AP from '../../action/types/ActionProps';
-import type * as S from '../../store/Store';
-import RenderItems from '../common/RenderItems';
-import { Div, Span } from '../common/Elements';
-import {problemsContainer, title, header, content} from '../../css/problems/Problems';
+import type * as Store from '../../store/Store';
+import { Div, Span, RenderItems } from '../common/Elements';
+import * as P from '../../css/problems/Problems';
 
 type ASelector = AP.jsonData[] | undefined;
 
 const ProblemItem = lazy(() => import('./ProblemItem'));
 
 const Problems = memo(() => {
-    const problemList = useSelector<S.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
+    const problemList = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
     const [items, setItems] = useState<JSX.Element[]>();
 
     const render = useCallback((problemList: AP.jsonData[]) => {
@@ -32,11 +31,11 @@ const Problems = memo(() => {
     },[problemList]);
 
     return (
-        <Div className="problems-container" css={problemsContainer}>
-            <Div className='header' css={header}>
-                <Span className="title" css={title}>학습지 상세 편집</Span>
+        <Div className="problems-container" css={P.problemsContainer}>
+            <Div className='header' css={P.header}>
+                <Span className="title" css={P.title}>학습지 상세 편집</Span>
             </Div>
-            <Div className='content' css={content}>
+            <Div className='content' css={P.content}>
                 <RenderItems>{items}</RenderItems>
             </Div>
         </Div>
