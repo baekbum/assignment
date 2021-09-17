@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Global } from "@emotion/react";
 import { style } from './css/index';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';

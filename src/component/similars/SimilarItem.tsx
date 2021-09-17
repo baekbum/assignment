@@ -1,96 +1,59 @@
 /** @jsxImportSource @emotion/react */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from '../../action/Action';
-import type * as AP from '../../action/types/ActionProps';
+import * as PRO from "../../store/problem/Problems";
+import * as SIM from "../../store/similar/Similars";
+import * as ACT from "../../store/active/Active";
+import type * as T from '../../store/propsType/props';
 import type * as Store from '../../store/Store';
 import { Div, Span } from '../common/Elements';
 import * as SI from '../../css/similars/SimilarItem';
 
-type ASelector = AP.jsonData[] | undefined;
+type ASelector = T.jsonData[] | undefined;
 type NSelector = number | undefined;
 
 type props = {
     index: number;
-    obj: AP.jsonData;
-};
-
-type newObject = {
-    pList: AP.jsonData[];
-    sList: AP.jsonData[];
-};
-
-type assignObj = {
-    (): newObject;
+    obj: T.jsonData;
 };
 
 type addProblem = {
-    (idx: number, obj: AP.jsonData): void;
+    (idx: number, obj: T.jsonData): void;
 };
 
 type changeProblem = {
-    (idx: number, obj: AP.jsonData): void;
+    (idx: number, obj: T.jsonData): void;
 };
 
-type dispatchAct = {
-    (pList: AP.jsonData[], sList: AP.jsonData[]): void;
-}
-
 const SimilarItem = ({index, obj}: props) => {
+    const problemsObj = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.payload);
+    const similarsObj = useSelector<Store.reducer, ASelector>(state => state?.similarsReducer?.payload);
+    const targetIndex = useSelector<Store.reducer, NSelector>(state => state?.activeReducer?.index);
     const dispatch = useDispatch();
-    const problemsObj = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
-    const similarsObj = useSelector<Store.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
-    const targetIndex = useSelector<Store.reducer, NSelector>(state => state?.isActiveReducer?.index);
-    //const targetObj = useSelector<Store.reducer, OSelector>(state => state.isActiveReducer?.obj);
-    const [problemList, setProblemList] = useState<AP.jsonData[]>([]);
-    const [similarList, setSimilarList] = useState<AP.jsonData[]>([]);
-
-    const assignObj = useCallback<assignObj>(() => {
-        const pList = Object.assign([], problemList);
-        const sList = Object.assign([], similarList);
-
-        return { 'pList': pList, 'sList': sList };
-    },[problemList, similarList]);
 
     const addProblem = useCallback<addProblem>((index, obj) => {
-        const newObj = assignObj();
-        
-        if (newObj !== undefined && targetIndex !== undefined) {
-            newObj.pList.splice(targetIndex + 1, 0, obj);
-            newObj.sList.splice(index, 1);
-
-            dispatchAct(newObj.pList, newObj.sList);
-        }
+        dispatch(PRO.add(obj));
+        dispatch(SIM.remove(index));
         // eslint-disable-next-line
-    },[dispatch, problemList, similarList, targetIndex]);
+    },[dispatch]);
 
     const changeProblem = useCallback<changeProblem>((index, obj) => {
-        const newObj = assignObj();
+        if (problemsObj !== undefined && similarsObj !== undefined && targetIndex !== undefined) {
+            const copyPro: T.jsonData[] = Object.assign([], problemsObj);
+            const copySim: T.jsonData[] = Object.assign([], similarsObj);
+            const temp: T.jsonData = copyPro[targetIndex];
+            const payload = {index: targetIndex, obj};
 
-        if (newObj !== undefined && targetIndex !== undefined) {
-            const tempObj: AP.jsonData = newObj.pList[targetIndex];
+            copyPro[targetIndex] = copySim[index];
+            copySim[index] = temp;
 
-            newObj.pList[targetIndex] = newObj.sList[index];
-            newObj.sList[index] = tempObj;
-
-            dispatchAct(newObj.pList, newObj.sList);
-            dispatch(actions.showSimilars(targetIndex, obj));
-        }        
+            dispatch(PRO.save(copyPro));
+            dispatch(SIM.save(copySim));
+            dispatch(ACT.showSimilar(payload));
+        } 
         // eslint-disable-next-line
-    },[targetIndex, problemList, similarList]);
-
-    const dispatchAct = useCallback<dispatchAct>((pList, sList) => {
-        dispatch(actions.updateProblems(pList));
-        dispatch(actions.updateSimilars(sList));
-        // eslint-disable-next-line
-    },[]);
-
-    useEffect(() => {
-        problemsObj ? setProblemList(problemsObj) : setProblemList([]);
-        similarsObj ? setSimilarList(similarsObj) : setSimilarList([]);
-
-    },[problemsObj, similarsObj]);
+    },[targetIndex]);
 
     return (
         <Div className='similar-item-container' css={SI.similarItemContainer}>

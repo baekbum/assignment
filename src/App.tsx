@@ -3,14 +3,13 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Div } from './component/common/Elements';
-import * as LD from './utils/LoadData'
+import { getProblems } from "./store/problem/Problems";
+import { getSimilars } from "./store/similar/Similars";
 import {mainContainer, itemContainer} from './css/App';
 
 const App = memo(({ children } : any) => {
   const dispatch = useDispatch();
   const [childList] = useState<JSX.Element[] | undefined>(children);
-  const pUrl = 'http://localhost:3000/fe-problems.json';
-  const sUrl = 'http://localhost:3000/fe-similars.json';
 
   const renderItem = useCallback((childList?: JSX.Element[]) => {
     return (
@@ -27,8 +26,8 @@ const App = memo(({ children } : any) => {
 
   useEffect(() => {
     try {
-      LD.loadData(dispatch, pUrl, 'PROBLEM');
-      LD.loadData(dispatch, sUrl, 'SIMILAR');  
+      dispatch(getProblems());
+      dispatch(getSimilars());
     } catch (error) {
       console.log(error);
     };    

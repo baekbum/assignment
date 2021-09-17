@@ -2,67 +2,47 @@
 import React, { useCallback } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import * as actions from '../../action/Action';
-import type * as AP from '../../action/types/ActionProps';
+import { remove } from "../../store/problem/Problems";
+import { showSimilar, hideSimilar } from '../../store/active/Active';
+import type * as T from '../../store/propsType/props';
 import type * as Store from '../../store/Store';
 import { Div, Span } from '../common/Elements';
 import * as PI from '../../css/problems/ProblemItem';
 
-type ASelector = AP.jsonData[] | undefined;
+//type ASelector = T.jsonData[] | undefined;
 type NSelector = number | undefined;
 
 type props = {
     index: number;
-    obj: AP.jsonData;
+    obj: T.jsonData;
 };
 
 type showSimilars = {
-    (idx: number, obj: AP.jsonData): void;
+    (idx: number, obj: T.jsonData): void;
 };
 
 type deleteProblem = {
     (id: number): void;
 };
 
-type newProblems = {
-    (key: number, problemList: ASelector): Promise<AP.jsonData[]>
-};
-
 const ProblemItem = ({index, obj}: props) => {
-    const problemsObj = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.problemsObj);
-    const targetIndex = useSelector<Store.reducer, NSelector>(state => state?.isActiveReducer?.index);
+    //const problemsObj = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.payload);
+    const targetIndex = useSelector<Store.reducer, NSelector>(state => state?.activeReducer?.index);
     const dispatch = useDispatch();
 
-    const showSimilars = useCallback<showSimilars>((idx, obj) => {
-        dispatch(actions.showSimilars(idx, obj));
+    const showSimilars = useCallback<showSimilars>((index, obj) => {
+        const payload = {index, obj};
+        dispatch(showSimilar(payload));
     },[dispatch])
 
     const deleteProblem = useCallback<deleteProblem>((id) => {
-        (async function name(id: number, obj: ASelector) {
-            try {
-                const newState =  await newProblems(id, obj);
-                dispatch(actions.deleteProblems(newState));
-                dispatch(actions.hideSimilars());
-            } catch (error) {
-                console.log(error);
-            };
-        })(id, problemsObj);
-        // eslint-disable-next-line
-    },[dispatch, problemsObj]);
-
-    const newProblems = useCallback<newProblems>((key, problemList) => {
-        return new Promise<AP.jsonData[]>((resolve, reject) => {
-            const problems: AP.jsonData[] = Object.assign([], problemList);
-            const id = key;
-
-            if (problems.length === 0) {
-                reject();
-            }
-
-            const newProblems = problems.filter(problem => problem.id !== id);
-            resolve(newProblems);
-        });
-    },[]);
+        try {
+            dispatch(remove(id));
+            dispatch(hideSimilar());    
+        } catch (error) {
+            console.log(error);
+        }        
+    },[dispatch]);
 
     return (
         <Div className='problem-item-container' css={PI.problemsItemContainer}>

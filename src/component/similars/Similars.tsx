@@ -2,21 +2,21 @@
 import React, { lazy, memo, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import type * as AP from '../../action/types/ActionProps';
+import type * as T from '../../store/propsType/props';
 import type * as Store from '../../store/Store';
 import { Div, Span, RenderItems } from '../common/Elements';
 import * as S from '../../css/similars/Similars';
 
-type ASelector = AP.jsonData[] | undefined;
-type OSelector = AP.jsonData | undefined;
+type ASelector = T.jsonData[] | undefined;
+type OSelector = T.jsonData | undefined;
 
 const SimilarItem = lazy(() => import('./SimilarItem'));
 
 const Similars = memo(() => {
-    const similarsObj = useSelector<Store.reducer, ASelector>(state => state?.similarsReducer?.similarsObj);
-    const targetObj = useSelector<Store.reducer, OSelector>(state => state?.isActiveReducer?.obj);
-    const isActive = useSelector<Store.reducer, boolean>(state => state?.isActiveReducer?.similarsShow);
-    const [similarList, setSimilarList] = useState<AP.jsonData[]>([]);
+    const similarsObj = useSelector<Store.reducer, ASelector>(state => state?.similarsReducer?.payload);
+    const targetObj = useSelector<Store.reducer, OSelector>(state => state?.activeReducer?.obj);
+    const isActive = useSelector<Store.reducer, boolean>(state => state?.activeReducer?.similarsShow);
+    const [similarList, setSimilarList] = useState<T.jsonData[]>([]);
     
     useEffect(() => {
         if (similarsObj !== undefined) {

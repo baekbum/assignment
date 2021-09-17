@@ -1,19 +1,3 @@
-export type problemsType = {
-  save_problems: string;
-  update_problems: string;
-  delete_problems: string;
-};
-
-export type similarsType = {
-  save_similars: string;
-  update_similars: string;
-};
-
-export type isShowType = {
-  show_similars: string;
-  hide_similars: string;
-};
-
 export type jsonData = {
   id: number;
   unitCode: number;
