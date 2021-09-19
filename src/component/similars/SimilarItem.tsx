@@ -53,7 +53,7 @@ const SimilarItem = ({index, obj}: props) => {
             dispatch(ACT.showSimilar(payload));
         } 
         // eslint-disable-next-line
-    },[targetIndex]);
+    },[targetIndex, problemsObj, similarsObj]);
 
     return (
         <Div className='similar-item-container' css={SI.similarItemContainer}>

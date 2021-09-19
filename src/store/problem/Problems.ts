@@ -59,29 +59,49 @@ export const add = (obj: T.jsonData) => (dispatch?: any, getState?: any) => {
   }
 };
 
-export const remove = (key: number) => async (
-  dispatch?: any,
-  getState?: any
-) => {
+export const remove = (key: number) => (dispatch?: any, getState?: any) => {
   dispatch(
     A.updateProblems(
       UPDATE_PROBLEMS,
-      await newList(key, getState().problemsReducer.payload)
+      newList(key, getState().problemsReducer.payload)
     )
   );
 };
 
 const newList = (key: number, list: T.jsonData[]) => {
-  return new Promise<T.jsonData[]>((resolve, reject) => {
-    const problems: T.jsonData[] = Object.assign([], list);
-    const id = key;
+  const problems: T.jsonData[] = Object.assign([], list);
+  const id = key;
 
-    if (problems.length === 0) reject(list);
+  if (problems.length === 0) return list;
 
-    const newProblems = problems.filter((problem) => problem.id !== id);
-    resolve(newProblems);
-  });
+  const newProblems = problems.filter((problem) => problem.id !== id);
+
+  return newProblems;
 };
+
+// export const remove = (key: number) => async (
+//   dispatch?: any,
+//   getState?: any
+// ) => {
+//   dispatch(
+//     A.updateProblems(
+//       UPDATE_PROBLEMS,
+//       await newList(key, getState().problemsReducer.payload)
+//     )
+//   );
+// };
+
+// const newList = (key: number, list: T.jsonData[]) => {
+//   return new Promise<T.jsonData[]>((resolve, reject) => {
+//     const problems: T.jsonData[] = Object.assign([], list);
+//     const id = key;
+
+//     if (problems.length === 0) reject(list);
+
+//     const newProblems = problems.filter((problem) => problem.id !== id);
+//     resolve(newProblems);
+//   });
+// };
 
 const problemsReducer: reducer = (state = initializeState, action) => {
   switch (action.type) {
