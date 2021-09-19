@@ -6,8 +6,8 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
 import store from './store/Store';
-import Problems from './component/problems/Problems';
-import Similars from './component/similars/Similars';
+ import Problems from './component/problems/Problems';
+ import Similars from './component/similars/Similars';
 
 ReactDOM.render(
   <Provider store={store}>

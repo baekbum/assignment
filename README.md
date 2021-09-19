@@ -1,3 +1,3 @@
-# react + typescript + emotion.js + redux
+# react + typescript + emotion.js + redux-saga
 
--0917 기존 작업물을 redux-thunk로 변경
+-0919 기존 작업물을 redux-saga로 변경

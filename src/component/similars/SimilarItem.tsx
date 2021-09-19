@@ -33,8 +33,8 @@ const SimilarItem = ({index, obj}: props) => {
     const dispatch = useDispatch();
 
     const addProblem = useCallback<addProblem>((index, obj) => {
-        dispatch(PRO.add(obj));
-        dispatch(SIM.remove(index));
+        dispatch({ type: PRO.actionList.ADD_PROBLEMS, payload: {obj} });
+        dispatch({ type: SIM.actionList.REMOVE_SIMILARS, payload: {index} });
         // eslint-disable-next-line
     },[dispatch]);
 
@@ -43,17 +43,16 @@ const SimilarItem = ({index, obj}: props) => {
             const copyPro: T.jsonData[] = Object.assign([], problemsObj);
             const copySim: T.jsonData[] = Object.assign([], similarsObj);
             const temp: T.jsonData = copyPro[targetIndex];
-            const payload = {index: targetIndex, obj};
 
             copyPro[targetIndex] = copySim[index];
             copySim[index] = temp;
 
-            dispatch(PRO.save(copyPro));
-            dispatch(SIM.save(copySim));
-            dispatch(ACT.showSimilar(payload));
+            dispatch({ type: PRO.actionList.SAVE_PROBLEMS, payload: {objs: copyPro} });
+            dispatch({ type: SIM.actionList.SAVE_SIMILARS, payload: {objs: copySim} });
+            dispatch({ type: ACT.actionList.SHOW_SIMILARS, payload: {index: targetIndex, obj} });
         } 
         // eslint-disable-next-line
-    },[targetIndex]);
+    },[targetIndex, problemsObj, similarsObj]);
 
     return (
         <Div className='similar-item-container' css={SI.similarItemContainer}>

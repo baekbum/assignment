@@ -2,6 +2,13 @@ import axios from "axios";
 import { Action } from "redux";
 import * as A from "./Action";
 import type * as T from "../propsType/props";
+import {
+  call,
+  put,
+  takeLatest,
+  select,
+  takeEvery,
+} from "@redux-saga/core/effects";
 
 export type state = {
   payload?: T.jsonData[];
@@ -26,37 +33,61 @@ const initializeState = {};
 const SAVE_SIMILARS = "SAVE_SIMILARS";
 const UPDATE_SIMILARS = "UPDATE_SIMILARS";
 
-export const getSimilars = () => (dispatch?: any, getState?: any) => {
+export const actionList = {
+  GET_SIMILARS: "GET_SIMILARS",
+  SAVE_SIMILARS: "SAVE_SIMILARS",
+  REMOVE_SIMILARS: "REMOVE_SIMILARS",
+};
+
+const getApi = () => {
   const url = "http://localhost:3000/fe-similars.json";
 
-  axios
-    .get(url)
-    .then((result) => {
-      dispatch(A.saveSimilars(SAVE_SIMILARS, result.data.data));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  return axios.get(url).then((result) => {
+    return result.data.data;
+  });
 };
 
-export const save = (objs: T.jsonData[]) => (
-  dispatch?: any,
-  getState?: any
-) => {
-  dispatch(A.saveSimilars(SAVE_SIMILARS, objs));
-};
-
-export const remove = (index: number) => (dispatch?: any, getState?: any) => {
-  const similars = getState().similarsReducer.payload;
-  const copy: T.jsonData[] = Object.assign([], similars);
-
+function* get() {
   try {
-    copy.splice(index, 1);
-    dispatch(A.updateSimilars(UPDATE_SIMILARS, copy));
+    const data: T.jsonData[] = yield call(getApi);
+
+    yield put(A.saveSimilars(SAVE_SIMILARS, data));
   } catch (error) {
     console.log(error);
   }
-};
+}
+
+function* save(action: any) {
+  const { payload } = action;
+
+  if (payload) {
+    yield put(A.saveSimilars(SAVE_SIMILARS, payload.objs));
+  }
+}
+
+function* remove(action: any) {
+  const { payload } = action;
+
+  if (payload) {
+    const similars: T.jsonData[] = yield select(
+      (state) => state.similarsReducer.payload
+    );
+    const copy: T.jsonData[] = Object.assign([], similars);
+
+    try {
+      copy.splice(payload.index, 1);
+      yield put(A.updateSimilars(UPDATE_SIMILARS, copy));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export function* watchSimilarSaga() {
+  yield takeLatest(actionList.GET_SIMILARS, get);
+  yield takeEvery(actionList.SAVE_SIMILARS, save);
+  yield takeEvery(actionList.REMOVE_SIMILARS, remove);
+}
 
 const similarsReducer: reducer = (state = initializeState, action) => {
   switch (action.type) {

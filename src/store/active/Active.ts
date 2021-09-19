@@ -1,6 +1,7 @@
 import { Action } from "redux";
 import * as A from "./Action";
 import * as T from "../propsType/props";
+import { put, takeEvery } from "@redux-saga/core/effects";
 
 export type state = {
   similarsShow: boolean;
@@ -32,16 +33,27 @@ const initialize = {
 const SHOW_SIMILARS = "SHOW_SIMILARS";
 const HIDE_SIMILARS = "HIDE_SIMILARS";
 
-export const showSimilar = (payload: props) => (
-  dispatch?: any,
-  getState?: any
-) => {
-  dispatch(A.showSimilars(SHOW_SIMILARS, payload.index, payload.obj));
+export const actionList = {
+  SHOW_SIMILARS: "SHOW_SIMILARS",
+  HIDE_SIMILARS: "HIDE_SIMILARS",
 };
 
-export const hideSimilar = () => (dispatch?: any, getState?: any) => {
-  dispatch(A.hideSimilars(HIDE_SIMILARS));
-};
+function* showSimilar(action: any) {
+  const { payload } = action;
+
+  if (payload) {
+    yield put(A.showSimilars(SHOW_SIMILARS, payload?.index, payload?.obj));
+  }
+}
+
+function* hideSimilar() {
+  yield put(A.hideSimilars(HIDE_SIMILARS));
+}
+
+export function* watchActiveSaga() {
+  yield takeEvery(actionList.SHOW_SIMILARS, showSimilar);
+  yield takeEvery(actionList.HIDE_SIMILARS, hideSimilar);
+}
 
 const activeReducer: reducer = (state = initialize, action) => {
   switch (action.type) {

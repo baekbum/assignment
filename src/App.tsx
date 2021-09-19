@@ -3,8 +3,8 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Div } from './component/common/Elements';
-import { getProblems } from "./store/problem/Problems";
-import { getSimilars } from "./store/similar/Similars";
+import * as PRO from "./store/problem/Problems";
+import * as SIM from "./store/similar/Similars";
 import {mainContainer, itemContainer} from './css/App';
 
 const App = memo(({ children } : any) => {
@@ -26,8 +26,8 @@ const App = memo(({ children } : any) => {
 
   useEffect(() => {
     try {
-      dispatch(getProblems());
-      dispatch(getSimilars());
+      dispatch({ type: PRO.actionList.GET_PROBLEMS });
+      dispatch({ type: SIM.actionList.GET_SIMILARS });
     } catch (error) {
       console.log(error);
     };    

@@ -2,14 +2,13 @@
 import React, { useCallback } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { remove } from "../../store/problem/Problems";
-import { showSimilar, hideSimilar } from '../../store/active/Active';
+import * as PRO from "../../store/problem/Problems";
+import * as ACT from '../../store/active/Active';
 import type * as T from '../../store/propsType/props';
 import type * as Store from '../../store/Store';
 import { Div, Span } from '../common/Elements';
 import * as PI from '../../css/problems/ProblemItem';
 
-//type ASelector = T.jsonData[] | undefined;
 type NSelector = number | undefined;
 
 type props = {
@@ -26,19 +25,17 @@ type deleteProblem = {
 };
 
 const ProblemItem = ({index, obj}: props) => {
-    //const problemsObj = useSelector<Store.reducer, ASelector>(state => state?.problemsReducer?.payload);
     const targetIndex = useSelector<Store.reducer, NSelector>(state => state?.activeReducer?.index);
     const dispatch = useDispatch();
 
     const showSimilars = useCallback<showSimilars>((index, obj) => {
-        const payload = {index, obj};
-        dispatch(showSimilar(payload));
+        dispatch({ type : ACT.actionList.SHOW_SIMILARS, payload: {index, obj}})
     },[dispatch])
 
     const deleteProblem = useCallback<deleteProblem>((id) => {
         try {
-            dispatch(remove(id));
-            dispatch(hideSimilar());    
+            dispatch({ type: PRO.actionList.REMOVE_PROBLEMS, payload: {id}});
+            dispatch({ type: ACT.actionList.HIDE_SIMILARS});
         } catch (error) {
             console.log(error);
         }        

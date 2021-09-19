@@ -1,11 +1,14 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
-import reduxThunk from "redux-thunk";
+import createSagaMiddleware from "@redux-saga/core";
+import rootSaga from "./saga/index";
 import problemsReducer from "./problem/Problems";
 import similarsReducer from "./similar/Similars";
 import activeReducer from "./active/Active";
 import type * as P from "./problem/Problems";
 import type * as S from "./similar/Similars";
 import type * as I from "./active/Active";
+
+const sagaMiddleware = createSagaMiddleware();
 
 export type reducer = {
   problemsReducer: P.state;
@@ -19,6 +22,8 @@ const reducers = combineReducers({
   activeReducer,
 });
 
-const store = createStore(reducers, applyMiddleware(reduxThunk));
+const store = createStore(reducers, applyMiddleware(sagaMiddleware));
+
+sagaMiddleware.run(rootSaga);
 
 export default store;
