@@ -25,7 +25,7 @@ type deleteProblem = {
 };
 
 type newProblems = {
-    (key: number, problemList: ASelector): Promise<AP.jsonData[]>
+    (key: number, problemList: ASelector): AP.jsonData[] | undefined
 };
 
 const ProblemItem = ({index, obj}: props) => {
@@ -38,31 +38,44 @@ const ProblemItem = ({index, obj}: props) => {
     },[dispatch])
 
     const deleteProblem = useCallback<deleteProblem>((id) => {
-        (async function name(id: number, obj: ASelector) {
-            try {
-                const newState =  await newProblems(id, obj);
+        try {
+            const newState = newProblems(id, problemsObj);
+
+            if (newState) {
                 dispatch(actions.deleteProblems(newState));
                 dispatch(actions.hideSimilars());
-            } catch (error) {
-                console.log(error);
-            };
-        })(id, problemsObj);
+            }            
+        } catch (error) {
+            console.log(error);
+        };
         // eslint-disable-next-line
     },[dispatch, problemsObj]);
 
     const newProblems = useCallback<newProblems>((key, problemList) => {
-        return new Promise<AP.jsonData[]>((resolve, reject) => {
-            const problems: AP.jsonData[] = Object.assign([], problemList);
-            const id = key;
+        const problems: AP.jsonData[] = Object.assign([], problemList);
+        const id = key;
 
-            if (problems.length === 0) {
-                reject();
-            }
-
+        if (problems.length === 0) {
+            return problemList;
+        } else {
             const newProblems = problems.filter(problem => problem.id !== id);
-            resolve(newProblems);
-        });
+            return newProblems;
+        }               
     },[]);
+
+    // const newProblems = useCallback<newProblems>((key, problemList) => {
+    //     return new Promise<AP.jsonData[]>((resolve, reject) => {
+    //         const problems: AP.jsonData[] = Object.assign([], problemList);
+    //         const id = key;
+
+    //         if (problems.length === 0) {
+    //             reject();
+    //         }
+
+    //         const newProblems = problems.filter(problem => problem.id !== id);
+    //         resolve(newProblems);
+    //     });
+    // },[]);
 
     return (
         <Div className='problem-item-container' css={PI.problemsItemContainer}>

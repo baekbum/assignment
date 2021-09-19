@@ -5,3 +5,4 @@
 - 0913 problems.tsx 적용
 - 0915 Global style 적용
 - 0915 ProblemItem.tsx, Similars.tsx, SimilarItem.tsx emotionjs로 변경 적용
+- 0919 ProblemItem.tsx 불필요한 프로미스 제거
